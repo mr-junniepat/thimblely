@@ -1,109 +1,175 @@
 # Thimblely
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A modern mobile and web application built with Nx monorepo architecture.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## 🏗️ Architecture
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+This is an Nx monorepo containing:
 
-## Generate a library
+- **Landing Page** (`apps/landing`) - Next.js landing page
+- **Mobile App** (`apps/mobile`) - React Native/Expo mobile app
+- **Shared Library** (`libs/shared`) - Common code, GraphQL queries, types, and utilities
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm
+- Expo CLI (for mobile development)
+
+### Installation
+
+```bash
+# Install dependencies
+npm install
 ```
 
-## Run tasks
+### Development
 
-To build the library use:
+#### Run the Landing Page
 
-```sh
-npx nx build pkg1
+```bash
+nx dev landing
 ```
 
-To run any task with Nx use:
+The landing page will be available at `http://localhost:4200`
 
-```sh
-npx nx <target> <project-name>
+#### Run the Mobile App
+
+```bash
+# Start the Expo development server
+nx start mobile
+
+# Run on iOS simulator
+nx run-ios mobile
+
+# Run on Android emulator
+nx run-android mobile
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### Building
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+#### Build Landing Page
 
-## Versioning and releasing
-
-To version and release the library use
-
-```
-npx nx release
+```bash
+nx build landing
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+#### Build Mobile App
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+# Create production build
+nx build mobile
 
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
+# Create EAS build
+nx prebuild mobile
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+## 📁 Project Structure
 
-```sh
-npx nx sync:check
+```
+thimblely/
+├── apps/
+│   ├── landing/          # Next.js landing page
+│   │   ├── src/
+│   │   │   ├── app/      # App router pages
+│   │   │   └── components/ # React components
+│   │   └── package.json
+│   └── mobile/           # React Native/Expo app
+│       ├── src/
+│       │   ├── app/      # Main app component
+│       │   ├── navigation/ # Navigation configuration
+│       │   ├── screens/  # Screen components
+│       │   └── components/ # Reusable components
+│       └── package.json
+├── libs/
+│   └── shared/           # Shared library
+│       └── src/
+│           └── lib/
+│               ├── graphql/  # GraphQL queries & mutations
+│               ├── types/    # TypeScript types
+│               └── utils/    # Utility functions
+└── package.json
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+## 🎨 Design Principles
 
-## Set up CI!
+- **Color Coding**: Solid colors only, no gradients
+- **Lucide Icons**: Using lucide-react and lucide-react-native for icons
+- **Repository Pattern**: Following repository pattern for data access
+- **GraphQL**: All API communication uses GraphQL
 
-### Step 1
+## 🛠️ Tech Stack
 
-To connect to Nx Cloud, run the following command:
+### Web (Landing Page)
+- **Framework**: Next.js 15 with App Router
+- **Styling**: CSS Modules
+- **State Management**: Apollo Client
+- **Icons**: Lucide React
 
-```sh
-npx nx connect
+### Mobile
+- **Framework**: React Native with Expo
+- **Navigation**: React Navigation
+- **State Management**: Apollo Client
+- **Icons**: Lucide React Native
+
+### Shared
+- **API Client**: Apollo Client
+- **Query Language**: GraphQL
+- **Language**: TypeScript
+
+## 📦 Available Scripts
+
+```bash
+# Development
+nx dev landing              # Start landing page dev server
+nx start mobile            # Start mobile app dev server
+
+# Building
+nx build landing           # Build landing page
+nx build mobile           # Build mobile app
+
+# Type checking
+nx typecheck landing       # Type check landing page
+nx typecheck mobile       # Type check mobile app
+nx typecheck shared       # Type check shared library
+
+# Graph
+nx graph                  # View project dependency graph
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+## 🌐 Environment Variables
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Create a `.env.local` file in the root directory:
 
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000/graphql
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 📱 Mobile App Features
 
-## Install Nx Console
+- Modern UI with React Native
+- Navigation with React Navigation
+- GraphQL integration
+- Type-safe with TypeScript
+- Cross-platform (iOS & Android)
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+## 🌍 Landing Page Features
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- Server-side rendering with Next.js
+- Modern, responsive design
+- GraphQL integration
+- Optimized performance
+- SEO-friendly
 
-## Useful links
+## 🤝 Contributing
 
-Learn more:
+1. Create a new branch
+2. Make your changes
+3. Submit a pull request
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 📄 License
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+MIT
+# thimblely
