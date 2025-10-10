@@ -1,0 +1,83 @@
+# Thimblely GraphQL Schema (Sample)
+# This is a reference schema - update with your actual backend schema
+
+type Query {
+  # Get all items
+  items: [Item!]!
+  
+  # Get a single item by ID
+  item(id: ID!): Item
+  
+  # Get current user
+  me: User
+}
+
+type Mutation {
+  # Create a new item
+  createItem(input: CreateItemInput!): Item!
+  
+  # Update an existing item
+  updateItem(id: ID!, input: UpdateItemInput!): Item!
+  
+  # Delete an item
+  deleteItem(id: ID!): DeleteResponse!
+  
+  # User authentication
+  login(email: String!, password: String!): AuthResponse!
+  register(input: RegisterInput!): AuthResponse!
+}
+
+# Types
+
+type Item {
+  id: ID!
+  name: String!
+  description: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  avatar: String
+  createdAt: String!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
+}
+
+type DeleteResponse {
+  success: Boolean!
+  message: String!
+}
+
+# Inputs
+
+input CreateItemInput {
+  name: String!
+  description: String!
+}
+
+input UpdateItemInput {
+  name: String
+  description: String
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  name: String!
+}
+
+# Subscriptions (optional)
+
+type Subscription {
+  itemCreated: Item!
+  itemUpdated: Item!
+  itemDeleted: ID!
+}
+

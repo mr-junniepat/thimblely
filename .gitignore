@@ -1,11 +1,12 @@
-# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# compiled output
-dist
-tmp
-out-tsc
+# Compiled output
+/dist
+/tmp
+/out-tsc
+.next
 
-# dependencies
+# Dependencies
 node_modules
 
 # IDEs and editors
@@ -24,7 +25,7 @@ node_modules
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# misc
+# Misc
 /.sass-cache
 /connect.lock
 /coverage
@@ -38,7 +39,31 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Nx
 .nx/cache
 .nx/workspace-data
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
+
+# Expo
+.expo
+.expo-shared
+__generated__
+web-build/
+
+# React Native
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Metro
+.metro-health-check*
+
+# Testing
+coverage/

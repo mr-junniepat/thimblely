@@ -16,6 +16,11 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@thimblely/source"]
+    "customConditions": ["@thimblely/source"],
+    "baseUrl": ".",
+    "paths": {
+      "@mobile/*": ["apps/mobile/src/*"],
+      "@thimblely/shared": ["libs/shared/src/index.ts"]
+    }
   }
 }

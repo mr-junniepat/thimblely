@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border p-0 m-0;
+  }
+
+  html,
+  body {
+    @apply max-w-full overflow-x-hidden;
+  }
+
+  body {
+    @apply antialiased bg-white text-gray-900;
+  }
+
+  a {
+    @apply no-underline;
+    color: inherit;
+  }
+
+  button {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-6;
+  }
+}
+
+/* Color palette - No gradients as per requirements */
+:root {
+  --primary: #7d2078;
+  --primary-dark: #19051a;
+  --logo-gold: #ffd700;
+  --logo-orange: #ffa500;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-gray-950 text-gray-100;
+  }
+}
