@@ -1,0 +1,56 @@
+==========================================
+HOW TO ENABLE SATOSHI FONT LATER
+==========================================
+
+✅ CURRENT STATUS:
+- App is running with system fonts
+- Font loading is disabled to prevent errors
+- App works perfectly without custom fonts
+
+📥 TO ENABLE SATOSHI FONT:
+
+1. DOWNLOAD THE FONT:
+   - Go to: https://www.fontshare.com/fonts/satoshi
+   - Download Satoshi Variable font (FREE)
+   - Extract the ZIP file
+
+2. COPY FONT FILE:
+   - Copy "Satoshi-Variable.ttf" to:
+     apps/mobile/assets/fonts/Satoshi-Variable.ttf
+
+3. ENABLE FONT IN CODE:
+   - Open: apps/mobile/src/App.tsx
+   - Uncomment lines 36-48 (remove the // comments)
+   - Comment out lines 51-53 (add // comments)
+   
+   The code should look like this:
+   
+   const [fontsLoaded, fontError] = useFonts({
+     Satoshi: require('../assets/fonts/Satoshi-Variable.ttf'),
+   });
+
+   useEffect(() => {
+     if (fontsLoaded || fontError) {
+       SplashScreen.hideAsync();
+     }
+   }, [fontsLoaded, fontError]);
+
+   if (!fontsLoaded && !fontError) {
+     return null;
+   }
+
+   // useEffect(() => {
+   //   SplashScreen.hideAsync();
+   // }, []);
+
+4. RESTART THE APP:
+   npx expo start --clear
+
+✅ RESULT:
+- App will load Satoshi Variable font
+- All text will use Satoshi instead of system fonts
+- Beautiful typography throughout the app
+
+⚠️  IMPORTANT:
+Until you do these steps, the app uses system fonts
+and works perfectly fine!

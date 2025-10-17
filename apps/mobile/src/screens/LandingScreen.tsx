@@ -11,9 +11,9 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@mobile/navigation';
+import { RootStackParamList } from '../App';
 import { colors } from '@thimblely/shared';
-import { Button } from '@mobile/components/Button';
+import { Button } from '../components/Button';
 import tw from 'twrnc';
 import {
   Scissors,
@@ -304,7 +304,7 @@ function AnimatedIcon({
   );
 }
 
-export function LandingScreen({ navigation }: LandingScreenProps) {
+export default function LandingScreen({ navigation }: LandingScreenProps) {
   const handleLogin = () => {
     navigation.navigate('Login');
   };
@@ -362,7 +362,7 @@ export function LandingScreen({ navigation }: LandingScreenProps) {
           <Text
             style={[
               tw`text-5xl font-normal text-white text-center`,
-              { fontFamily: 'Outfit_400Regular' },
+              { fontFamily: 'Outfit-Regular' },
             ]}
           >
             Thimblely
@@ -370,15 +370,20 @@ export function LandingScreen({ navigation }: LandingScreenProps) {
         </View>
 
         {/* Buttons Container - positioned at y: 706px in Figma */}
-        <View style={tw.style(`absolute w-full px-8.75`, { top: 706 })}>
-          <View style={tw`w-full gap-4`}>
-            {/* Log in Button */}
-            <Button variant="primary" onPress={handleLogin}>
+        <View
+          style={tw.style(`absolute w-full`, {
+            top: 706,
+            paddingHorizontal: 35,
+          })}
+        >
+          <View style={{ gap: 16, width: '100%' }}>
+            {/* Log in Button - White background from Figma */}
+            <Button variant="secondary" onPress={handleLogin}>
               Log in
             </Button>
 
-            {/* Sign up Button */}
-            <Button variant="secondary" onPress={handleSignUp}>
+            {/* Sign up Button - Dark background (#19051A) from Figma */}
+            <Button variant="primary" onPress={handleSignUp}>
               Sign up
             </Button>
           </View>
@@ -389,7 +394,7 @@ export function LandingScreen({ navigation }: LandingScreenProps) {
           <Text
             style={[
               tw`text-white text-sm text-center leading-5`,
-              { fontFamily: 'Outfit_400Regular' },
+              { fontFamily: 'Outfit-Regular' },
             ]}
           >
             By signing up, you accept stitchmeister{' '}

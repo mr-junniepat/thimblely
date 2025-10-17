@@ -4,6 +4,7 @@
     "slug": "@thimblely/mobile",
     "version": "1.0.0",
     "orientation": "portrait",
+    "main": "index.js",
     "icon": "./assets/images/icon.png",
     "scheme": "@thimblely/mobile",
     "userInterfaceStyle": "automatic",

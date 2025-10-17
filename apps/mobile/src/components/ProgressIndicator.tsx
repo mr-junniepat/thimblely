@@ -1,6 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
-import tw from 'twrnc';
+import { View, StyleSheet } from 'react-native';
+import { COLORS } from '@thimblely/shared';
 
 interface ProgressIndicatorProps {
   currentStep: number;
@@ -12,15 +12,35 @@ export function ProgressIndicator({
   totalSteps,
 }: ProgressIndicatorProps) {
   return (
-    <View style={tw`flex-row gap-1.5`}>
-      {Array.from({ length: totalSteps }, (_, index) => (
+    <View style={styles.container}>
+      {Array.from({ length: totalSteps }).map((_, index) => (
         <View
           key={index}
-          style={tw`w-14 h-1 rounded-full ${
-            index < currentStep ? 'bg-[#A30552]' : 'bg-[#D9D9D9]'
-          }`}
+          style={[
+            styles.bar,
+            index < currentStep ? styles.activeBar : styles.inactiveBar,
+          ]}
         />
       ))}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5, // From Figma
+  },
+  bar: {
+    width: 55, // From Figma
+    height: 4, // From Figma
+    borderRadius: 36, // Fully rounded from Figma
+  },
+  activeBar: {
+    backgroundColor: COLORS.complimentary, // #A30552 from Figma
+  },
+  inactiveBar: {
+    backgroundColor: '#D9D9D9', // From Figma
+  },
+});

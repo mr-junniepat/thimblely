@@ -22,13 +22,19 @@ export const colors = {
   complimentaryDark: '#56062D',
   greyText: '#68666F',
   lightPink: '#FFF0F7',
-  purple: '#6B2374',
+  purple: '#6B2374', // Forgot Password color
+  purpleLink: '#6A2374', // Sign up link color from Figma
   mutedGrey: '#7F7F7F',
   textGrey: '#5E5656',
   lightGrey: '#9F9DA0',
 
   // Functional Colors
-  text: {
+  text: '#111113',
+  textSecondary: '#68666F',
+
+  // Deprecated - use specific colors above
+  // @deprecated
+  textOld: {
     primary: '#FFFFFF',
     secondary: '#111113',
     muted: '#68666F',
@@ -41,6 +47,12 @@ export const colors = {
     light: '#F9FAFB',
     white: '#FFFFFF',
   },
+
+  // Status Colors
+  success: '#10B981',
+  error: '#EF4444',
+  warning: '#F59E0B',
+  info: '#3B82F6',
 
   // Button Colors
   button: {
@@ -60,5 +72,8 @@ export const colors = {
     cta: ['#A30552', '#56062D', '#A30552'], // Sign up CTA button
   },
 } as const;
+
+// Export as COLORS for consistency
+export const COLORS = colors;
 
 export type Colors = typeof colors;

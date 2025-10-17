@@ -1,0 +1,61 @@
+==========================================
+SATOSHI FONT SETUP FOR THIMBLELY MOBILE
+==========================================
+
+✅ WHAT'S ALREADY DONE:
+- expo-font package installed
+- App.tsx configured to load Satoshi Variable font
+- Font helper utilities created in src/styles/fonts.ts
+- Fallback to system fonts if font file not found
+
+🔴 WHAT YOU NEED TO DO:
+
+1. DOWNLOAD THE FONT:
+   - Go to: https://www.fontshare.com/fonts/satoshi
+   - Click "Download font" (it's FREE!)
+   - Extract the ZIP file
+
+2. COPY FONT FILE:
+   - Find "Satoshi-Variable.ttf" in the extracted folder
+   - Copy it to: apps/mobile/assets/fonts/Satoshi-Variable.ttf
+   
+   Or use this command from the font folder:
+   cp Satoshi-Variable.ttf /Users/patrickigwe/Desktop/sideprojects/thimblely/apps/mobile/assets/fonts/
+
+3. RESTART THE APP:
+   npx expo start --clear
+
+📖 HOW TO USE THE FONT IN YOUR CODE:
+
+import { FONTS } from '../styles/fonts';
+
+// In StyleSheet
+const styles = StyleSheet.create({
+  title: {
+    ...FONTS.bold,      // fontFamily: 'Satoshi', fontWeight: '700'
+    fontSize: 24,
+  },
+  body: {
+    ...FONTS.regular,   // fontFamily: 'Satoshi', fontWeight: '400'
+    fontSize: 16,
+  },
+});
+
+// Or inline styles
+<Text style={{ ...FONTS.semibold, fontSize: 18 }}>
+  Thimblely
+</Text>
+
+AVAILABLE FONT WEIGHTS:
+- FONTS.regular  (400)
+- FONTS.medium   (500)
+- FONTS.semibold (600)
+- FONTS.bold     (700)
+- FONTS.black    (900)
+
+⚠️  IMPORTANT:
+Until you add the font file, the app will use system fonts.
+The app will still work normally!
+
+For more details, see: FONTS_SETUP.md
+

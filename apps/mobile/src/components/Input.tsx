@@ -1,80 +1,73 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TextInputProps } from 'react-native';
-import { LucideIcon } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TextInput, TextInputProps, ViewStyle } from 'react-native';
 import { colors } from '@thimblely/shared';
+import { LucideIcon } from 'lucide-react-native';
 import tw from 'twrnc';
 
 interface InputProps extends TextInputProps {
   label?: string;
   icon?: LucideIcon;
-  error?: string;
   rightIcon?: React.ReactNode;
+  error?: string;
+  containerStyle?: ViewStyle;
 }
 
 export function Input({
   label,
   icon: Icon,
-  error,
   rightIcon,
-  style,
-  ...textInputProps
+  error,
+  containerStyle,
+  ...props
 }: InputProps) {
-  const [isFocused, setIsFocused] = useState(false);
-
   return (
-    <View style={tw`w-full`}>
-      {/* Label */}
+    <View style={[{ marginBottom: 16 }, containerStyle]}>
       {label && (
         <Text
-          style={[
-            tw`text-sm text-[${colors.black}] mb-2`,
-            { fontFamily: 'Outfit_400Regular' },
-          ]}
+          style={{
+            fontSize: 14,
+            fontFamily: 'Outfit-Regular',
+            fontWeight: 'normal',
+            color: colors.black,
+            marginBottom: 8,
+          }}
         >
           {label}
         </Text>
       )}
-
-      {/* Input Field */}
-      <View style={tw`relative`}>
-        <View
-          style={tw`flex-row items-center border border-[rgba(0,0,0,0.1)] rounded-xl px-4 py-4 ${
-            isFocused ? 'bg-white' : 'bg-transparent'
-          } ${error ? 'border-red-500' : ''}`}
-        >
-          {/* Left Icon */}
-          {Icon && (
-            <View style={tw`mr-2`}>
-              <Icon size={16} color={colors.greyText} />
-            </View>
-          )}
-
-          {/* Text Input */}
-          <TextInput
-            style={[
-              tw`flex-1 text-sm text-[${colors.black}]`,
-              { fontFamily: 'Outfit_400Regular' },
-              style,
-            ]}
-            placeholderTextColor={colors.greyText}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            {...textInputProps}
-          />
-
-          {/* Right Icon (e.g., Eye icon for password) */}
-          {rightIcon && <View style={tw`ml-2`}>{rightIcon}</View>}
-        </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: colors.white,
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: error ? colors.error : colors.border,
+          paddingHorizontal: 16,
+          minHeight: 51,
+        }}
+      >
+        {Icon && (
+          <View style={{ marginRight: 8 }}>
+            <Icon size={20} color={colors.textSecondary} />
+          </View>
+        )}
+        <TextInput
+          style={{
+            flex: 1,
+            fontSize: 14,
+            fontWeight: '400',
+            color: colors.black,
+            paddingVertical: 16,
+            paddingLeft: Icon ? 0 : undefined,
+          }}
+          placeholderTextColor={colors.textSecondary}
+          {...props}
+        />
+        {rightIcon && <View style={{ marginLeft: 8 }}>{rightIcon}</View>}
       </View>
-
-      {/* Error Message */}
       {error && (
-        <Text
-          style={[
-            tw`text-xs text-red-500 mt-1`,
-            { fontFamily: 'Outfit_400Regular' },
-          ]}
-        >
+        <Text style={{ fontSize: 12, color: colors.error, marginTop: 4 }}>
           {error}
         </Text>
       )}

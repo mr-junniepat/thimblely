@@ -8,9 +8,9 @@ import {
   Image,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@mobile/navigation';
+import { RootStackParamList } from '../App';
 import { colors } from '@thimblely/shared';
-import { Input } from '@mobile/components/Input';
+import { Input, GradientButton } from '../components';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import tw from 'twrnc';
@@ -19,7 +19,7 @@ type LoginScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
 };
 
-export function LoginScreen({ navigation }: LoginScreenProps) {
+export default function LoginScreen({ navigation }: LoginScreenProps) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -31,8 +31,8 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
 
   const handleLogin = () => {
     if (isFormValid) {
-      // TODO: Implement login
-      navigation.navigate('Home');
+      // TODO: Implement login mutation
+      navigation.navigate('MainTabs');
     }
   };
 
@@ -71,21 +71,26 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
         {/* Title */}
         <View style={tw`mt-6 mb-8`}>
           <Text
-            style={[
-              tw`text-4xl text-[${colors.black}] mb-3`,
-              { fontFamily: 'Outfit_500Medium' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Medium',
+              fontWeight: '500',
+              fontSize: 40,
+              color: colors.black,
+              marginBottom: 12,
+              letterSpacing: -1.6,
+            }}
           >
-            <Text style={tw`text-[${colors.complimentary}]`}>
-              Welcome{'\n'}
-            </Text>
+            <Text style={{ color: colors.complimentary }}>Welcome{'\n'}</Text>
             Back!
           </Text>
           <Text
-            style={[
-              tw`text-base text-[${colors.greyText}]`,
-              { fontFamily: 'Outfit_400Regular' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Regular',
+              fontWeight: '400',
+              fontSize: 16,
+              color: colors.greyText,
+              letterSpacing: -0.64,
+            }}
           >
             Let's pick up right where you left off.
           </Text>
@@ -153,7 +158,7 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
             <Text
               style={[
                 tw`text-xs text-[${colors.black}]`,
-                { fontFamily: 'Outfit_400Regular' },
+                { fontFamily: 'Outfit-Regular' },
               ]}
             >
               Remember me
@@ -165,7 +170,7 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
             <Text
               style={[
                 tw`text-xs text-[${colors.purple}]`,
-                { fontFamily: 'Outfit_400Regular' },
+                { fontFamily: 'Outfit-Regular' },
               ]}
             >
               Forgot Password?
@@ -174,33 +179,12 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
         </View>
 
         {/* Login Button */}
-        <TouchableOpacity
+        <GradientButton
+          title="Login"
           onPress={handleLogin}
           disabled={!isFormValid}
-          activeOpacity={0.8}
           style={tw`mb-6`}
-        >
-          <LinearGradient
-            colors={
-              isFormValid
-                ? colors.gradients.cta
-                : ['#E8E8E8', '#E8E8E8', '#E8E8E8']
-            }
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            locations={[0, 0.49648, 0.97115]}
-            style={tw`py-4 rounded-full items-center justify-center`}
-          >
-            <Text
-              style={[
-                tw`text-white text-sm`,
-                { fontFamily: 'Outfit_400Regular' },
-              ]}
-            >
-              Login
-            </Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        />
 
         {/* Or Divider */}
         <View style={tw`flex-row items-center mb-6`}>
@@ -208,7 +192,7 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
           <Text
             style={[
               tw`mx-3 text-sm text-[${colors.black}]`,
-              { fontFamily: 'Outfit_400Regular' },
+              { fontFamily: 'Outfit-Regular' },
             ]}
           >
             Or
@@ -223,17 +207,31 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
           style={tw`mb-6`}
         >
           <View
-            style={tw`flex-row items-center justify-center py-4 rounded-full border border-[#D2CDCD] bg-white`}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingVertical: 10, // From Figma
+              paddingHorizontal: 16, // From Figma
+              borderRadius: 32, // From Figma
+              borderWidth: 1,
+              borderColor: '#D2CDCD', // From Figma
+              backgroundColor: 'white',
+              gap: 12, // From Figma
+            }}
           >
             <Image
               source={require('../../assets/images/google_logo.png')}
-              style={tw`w-6 h-6 mr-3`}
+              style={tw`w-6 h-6`}
               resizeMode="contain"
             />
             <Text
               style={[
-                tw`text-sm text-[${colors.black}]`,
-                { fontFamily: 'Outfit_400Regular' },
+                {
+                  fontFamily: 'Outfit-Regular',
+                  fontSize: 14,
+                  color: colors.black,
+                },
               ]}
             >
               Continue with Google
@@ -243,9 +241,11 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
 
         {/* Don't have an account */}
         <View style={tw`items-center`}>
-          <Text style={[tw`text-xs`, { fontFamily: 'Outfit_400Regular' }]}>
-            <Text style={tw`text-[#7F7F7F]`}>Don't have an account ? </Text>
-            <Text style={tw`text-[${colors.purple}]`} onPress={handleSignUp}>
+          <Text style={{ fontFamily: 'Outfit-Regular', fontSize: 12 }}>
+            <Text style={{ color: colors.mutedGrey }}>
+              Don't have an account ?{' '}
+            </Text>
+            <Text style={{ color: colors.purpleLink }} onPress={handleSignUp}>
               Sign up
             </Text>
           </Text>

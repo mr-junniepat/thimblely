@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "msjsdiag.vscode-react-native",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "dsznajder.es7-react-js-snippets"
+  ]
+}

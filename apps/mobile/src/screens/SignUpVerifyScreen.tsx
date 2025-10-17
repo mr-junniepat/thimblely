@@ -4,16 +4,15 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  ScrollView,
   ImageBackground,
+  StyleSheet,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '@mobile/navigation';
+import { RootStackParamList } from '../App';
 import { colors } from '@thimblely/shared';
-import { ProgressIndicator } from '@mobile/components/ProgressIndicator';
+import { ProgressIndicator, GradientButton } from '../components';
 import { ChevronLeft } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import tw from 'twrnc';
 
 type SignUpVerifyScreenProps = {
@@ -21,14 +20,15 @@ type SignUpVerifyScreenProps = {
   route: RouteProp<RootStackParamList, 'SignUpVerify'>;
 };
 
-export function SignUpVerifyScreen({
+export default function SignUpVerifyScreen({
   navigation,
   route,
 }: SignUpVerifyScreenProps) {
   const [code, setCode] = useState(['', '', '', '', '', '']);
-  const [timer, setTimer] = useState(65); // 1:05
-  const inputRefs = useRef<(TextInput | null)[]>([]);
+  const [timer, setTimer] = useState(65); // 1:05 in seconds
+  const inputRefs = useRef<Array<TextInput | null>>([]);
 
+  // Timer countdown
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
@@ -36,7 +36,6 @@ export function SignUpVerifyScreen({
       }, 1000);
       return () => clearInterval(interval);
     }
-    return undefined;
   }, [timer]);
 
   const formatTime = (seconds: number) => {
@@ -46,6 +45,9 @@ export function SignUpVerifyScreen({
   };
 
   const handleCodeChange = (text: string, index: number) => {
+    // Only allow numbers
+    if (text && !/^\d+$/.test(text)) return;
+
     const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
@@ -56,41 +58,34 @@ export function SignUpVerifyScreen({
     }
   };
 
-  const handleKeyPress = (key: string, index: number) => {
-    // Handle backspace
-    if (key === 'Backspace' && !code[index] && index > 0) {
+  const handleKeyPress = (e: any, index: number) => {
+    if (e.nativeEvent.key === 'Backspace' && !code[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
-  const isCodeComplete = code.every((digit) => digit !== '');
+  const handleResend = () => {
+    setTimer(65);
+    setCode(['', '', '', '', '', '']);
+    // TODO: Implement resend code
+  };
 
   const handleVerify = () => {
-    if (isCodeComplete) {
-      // TODO: Verify code and navigate to home
-      navigation.navigate('Home');
+    const verificationCode = code.join('');
+    if (verificationCode.length === 6) {
+      // TODO: Implement verification
+      navigation.navigate('MainTabs');
     }
   };
 
-  const handleResendCode = () => {
-    // TODO: Implement resend verification code
-    setTimer(65);
-    setCode(['', '', '', '', '', '']);
-  };
-
-  // Mask email for privacy
-  const maskEmail = (email: string) => {
-    const [localPart, domain] = email.split('@');
-    if (localPart.length <= 2) return email;
-    return `${localPart[0]}${'*'.repeat(localPart.length - 1)}@${domain}`;
-  };
+  const isCodeComplete = code.every((digit) => digit !== '');
 
   return (
     <View style={tw`flex-1 bg-white`}>
       {/* Background Image Overlay */}
       <ImageBackground
         source={require('../../assets/images/bgfirstsignup.png')}
-        style={tw`absolute top-0 left-0 right-0 h-[746px]`}
+        style={tw`absolute top-0 left-0 right-0 h-[611px]`}
         resizeMode="cover"
         imageStyle={{ opacity: 1 }}
       />
@@ -114,109 +109,119 @@ export function SignUpVerifyScreen({
         <View style={tw`w-10`} />
       </View>
 
-      <ScrollView
-        style={tw`flex-1 px-6 relative z-10`}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={tw`pb-6`}
-      >
-        {/* Title */}
-        <View style={tw`mt-6 mb-12`}>
+      <View style={tw`flex-1 px-6 relative z-10`}>
+        {/* Title Section */}
+        <View style={{ marginTop: 24, marginBottom: 47 }}>
+          {/* Title */}
           <Text
-            style={[
-              tw`text-4xl text-[${colors.black}] mb-3`,
-              { fontFamily: 'Outfit_500Medium' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Medium',
+              fontWeight: '500',
+              fontSize: 40,
+              color: colors.black,
+              marginBottom: 12, // Gap from Figma
+              letterSpacing: -1.6,
+            }}
           >
-            <Text style={tw`text-[${colors.complimentary}]`}>Verify{'\n'}</Text>
-            Your Account
+            <Text style={{ color: colors.complimentary }}>Verify</Text> your
+            account
           </Text>
+
+          {/* Subtitle */}
           <Text
-            style={[
-              tw`text-base text-[${colors.greyText}]`,
-              { fontFamily: 'Outfit_400Regular' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Regular',
+              fontWeight: '400',
+              fontSize: 16,
+              color: colors.greyText, // #68666F
+              letterSpacing: -0.64,
+            }}
           >
-            We've sent a 6-digit code to {maskEmail(route.params.email)} Enter
-            it below to continue.
+            We've sent a 6-digit code to g********@gmail.com Enter it below to
+            continue.
           </Text>
         </View>
 
-        {/* Verification Code Inputs */}
-        <View style={tw`mb-4`}>
-          <View style={tw`flex-row justify-between mb-4`}>
+        {/* OTP Input Section */}
+        <View style={{ gap: 16, marginBottom: 47 }}>
+          {/* OTP Boxes */}
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}
+          >
             {code.map((digit, index) => (
-              <TextInput
+              <View
                 key={index}
-                ref={(ref) => {
-                  inputRefs.current[index] = ref;
+                style={{
+                  width: 50, // From Figma
+                  height: 50, // From Figma
+                  borderWidth: 1,
+                  borderColor: digit
+                    ? '#6A2374' // Active border color from Figma
+                    : 'rgba(0,0,0,0.1)', // Inactive border from Figma
+                  borderRadius: 5, // From Figma
+                  backgroundColor: colors.white,
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
-                style={[
-                  tw`w-12.5 h-12.5 bg-white border rounded-md text-center text-sm`,
-                  {
-                    fontFamily: 'Outfit_400Regular',
-                    borderWidth: 1,
-                    borderColor: digit ? colors.purple : 'rgba(0, 0, 0, 0.1)',
-                    color: '#1F2937',
-                  },
-                ]}
-                maxLength={1}
-                keyboardType="number-pad"
-                value={digit}
-                onChangeText={(text) => handleCodeChange(text, index)}
-                onKeyPress={({ nativeEvent }) =>
-                  handleKeyPress(nativeEvent.key, index)
-                }
-              />
+              >
+                <TextInput
+                  ref={(ref) => (inputRefs.current[index] = ref)}
+                  style={{
+                    fontSize: 14, // From Figma
+                    fontWeight: '400',
+                    color: '#1F2937', // From Figma (blacktext)
+                    textAlign: 'center',
+                    width: '100%',
+                    height: '100%',
+                    padding: 0,
+                  }}
+                  value={digit}
+                  onChangeText={(text) => handleCodeChange(text, index)}
+                  onKeyPress={(e) => handleKeyPress(e, index)}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  selectTextOnFocus
+                />
+              </View>
             ))}
           </View>
 
-          {/* Timer & Resend */}
+          {/* Timer and Resend */}
           <Text
-            style={[
-              tw`text-xs text-center`,
-              { fontFamily: 'Outfit_400Regular' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Regular',
+              fontWeight: '400',
+              fontSize: 12, // From Figma
+              textAlign: 'center',
+              width: '100%',
+            }}
           >
-            <Text style={tw`text-[#9F9DA0]`}>{formatTime(timer)} </Text>
+            <Text style={{ color: colors.lightGrey }}>
+              {formatTime(timer)}{' '}
+            </Text>
             <Text
-              style={tw`text-[${colors.purple}] underline`}
-              onPress={timer === 0 ? handleResendCode : undefined}
+              style={{
+                color: colors.purple, // #6B2374
+                textDecorationLine: 'underline',
+              }}
+              onPress={timer === 0 ? handleResend : undefined}
             >
               Resend verification code
             </Text>
           </Text>
         </View>
 
-        {/* Verify Button */}
-        <View style={tw`mt-8`}>
-          <TouchableOpacity
-            onPress={handleVerify}
-            disabled={!isCodeComplete}
-            activeOpacity={0.8}
-          >
-            <LinearGradient
-              colors={
-                isCodeComplete
-                  ? colors.gradients.cta
-                  : ['#E8E8E8', '#E8E8E8', '#E8E8E8']
-              }
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              locations={[0, 0.49648, 0.97115]}
-              style={tw`py-4 rounded-full items-center justify-center`}
-            >
-              <Text
-                style={[
-                  tw`text-white text-sm`,
-                  { fontFamily: 'Outfit_400Regular' },
-                ]}
-              >
-                Verify Account
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+        {/* Verify Account Button */}
+        <GradientButton
+          title="Verify Account"
+          onPress={handleVerify}
+          disabled={!isCodeComplete}
+        />
+      </View>
     </View>
   );
 }

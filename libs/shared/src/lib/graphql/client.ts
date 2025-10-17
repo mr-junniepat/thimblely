@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/graphql';
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/graphql';
 
 export const createApolloClient = () => {
   return new ApolloClient({
@@ -16,3 +17,5 @@ export const createApolloClient = () => {
   });
 };
 
+// Export a default client instance for React Native
+export const client = createApolloClient();

@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '@mobile/navigation';
+import { RootStackParamList } from '../App';
 import { colors } from '@thimblely/shared';
-import { ProgressIndicator } from '@mobile/components/ProgressIndicator';
-import { Input } from '@mobile/components/Input';
+import { ProgressIndicator } from '../components/ProgressIndicator';
+import { Input } from '../components/Input';
 import {
   ChevronLeft,
   Mail,
@@ -31,7 +31,10 @@ type SignUpFormScreenProps = {
   route: RouteProp<RootStackParamList, 'SignUpForm'>;
 };
 
-export function SignUpFormScreen({ navigation, route }: SignUpFormScreenProps) {
+export default function SignUpFormScreen({
+  navigation,
+  route,
+}: SignUpFormScreenProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -52,6 +55,8 @@ export function SignUpFormScreen({ navigation, route }: SignUpFormScreenProps) {
 
   const handleNext = () => {
     if (isFormValid) {
+      // TODO: Implement sign up mutation
+      // Navigate to verify screen
       navigation.navigate('SignUpVerify', {
         userType: route.params.userType,
         country: route.params.country,
@@ -108,29 +113,37 @@ export function SignUpFormScreen({ navigation, route }: SignUpFormScreenProps) {
         contentContainerStyle={tw`pb-6`}
       >
         {/* Title */}
-        <View style={tw`mt-6 mb-6`}>
+        <View style={{ marginTop: 24, marginBottom: 24 }}>
           <Text
-            style={[
-              tw`text-3xl text-[${colors.complimentary}] mb-2`,
-              { fontFamily: 'Outfit_500Medium' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Medium',
+              fontWeight: '500',
+              fontSize: 32, // From Figma
+              color: colors.complimentary, // #A30552
+              letterSpacing: -1.28, // From Figma
+              marginBottom: 8, // Gap from Figma
+            }}
           >
             Create Account
           </Text>
           <Text
-            style={[
-              tw`text-base text-[${colors.greyText}]`,
-              { fontFamily: 'Outfit_400Regular' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Regular',
+              fontWeight: '400',
+              fontSize: 16,
+              color: colors.greyText, // #68666F
+              letterSpacing: -0.64,
+              maxWidth: 345,
+            }}
           >
             Just a few details so we can set up your perfect fit.
           </Text>
         </View>
 
         {/* Form */}
-        <View style={tw`gap-5 mb-5`}>
+        <View style={{ gap: 20, marginBottom: 20 }}>
           {/* First Name and Last Name - Side by Side */}
-          <View style={tw`flex-row gap-4`}>
+          <View style={{ flexDirection: 'row', gap: 16 }}>
             <View style={tw`flex-1`}>
               <Input
                 label="First Name"
@@ -202,27 +215,57 @@ export function SignUpFormScreen({ navigation, route }: SignUpFormScreenProps) {
         <TouchableOpacity
           onPress={() => setAcceptedTerms(!acceptedTerms)}
           activeOpacity={0.7}
-          style={tw`flex-row items-start mb-5`}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            marginBottom: 20,
+            height: 48,
+          }}
         >
           <View
-            style={tw`w-4 h-4 border border-[#B6B6B6] rounded mr-3 mt-0.5 items-center justify-center ${
-              acceptedTerms
-                ? 'bg-[${colors.complimentary}] border-[${colors.complimentary}]'
-                : ''
-            }`}
+            style={{
+              width: 15, // From Figma
+              height: 15, // From Figma
+              borderWidth: 1,
+              borderColor: '#B6B6B6', // From Figma
+              borderRadius: 3, // From Figma
+              marginRight: 11, // From Figma (11px to align with text at 35px from left)
+              marginTop: 12, // From Figma (to center vertically in 48px container)
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: acceptedTerms
+                ? colors.complimentary
+                : 'transparent',
+            }}
           >
-            {acceptedTerms && <View style={tw`w-2 h-2 bg-white rounded-sm`} />}
+            {acceptedTerms && (
+              <View
+                style={{
+                  width: 8,
+                  height: 8,
+                  backgroundColor: 'white',
+                  borderRadius: 1,
+                }}
+              />
+            )}
           </View>
           <Text
-            style={[
-              tw`text-xs text-[#5E5656] flex-1`,
-              { fontFamily: 'Outfit_400Regular' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Regular',
+              fontWeight: '400',
+              fontSize: 13, // From Figma
+              color: colors.textGrey, // #5E5656
+              flex: 1,
+              marginTop: 12, // From Figma (27px from top of 48px container)
+            }}
           >
             By signing up, you accept thimblely{' '}
-            <Text style={tw`underline`}>Terms of Services</Text> and{' '}
-            <Text style={tw`underline`}>privacy</Text> and{' '}
-            <Text style={tw`underline`}>cookies</Text>.
+            <Text style={{ textDecorationLine: 'underline' }}>
+              Terms of Services
+            </Text>{' '}
+            and <Text style={{ textDecorationLine: 'underline' }}>privacy</Text>{' '}
+            and <Text style={{ textDecorationLine: 'underline' }}>cookies</Text>
+            .
           </Text>
         </TouchableOpacity>
 
@@ -231,63 +274,107 @@ export function SignUpFormScreen({ navigation, route }: SignUpFormScreenProps) {
           onPress={handleNext}
           disabled={!isFormValid}
           activeOpacity={0.8}
-          style={tw`mb-5`}
+          style={{ marginBottom: 20 }}
         >
-          <LinearGradient
-            colors={
-              isFormValid
-                ? colors.gradients.cta
-                : ['#E8E8E8', '#E8E8E8', '#E8E8E8']
-            }
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            locations={[0, 0.49648, 0.97115]}
-            style={tw`py-4 rounded-full items-center justify-center`}
+          <View
+            style={{
+              backgroundColor: isFormValid ? undefined : '#E8E8E8',
+              borderRadius: 32,
+              paddingVertical: 12,
+              paddingHorizontal: 8,
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 51,
+            }}
           >
+            {isFormValid ? (
+              <LinearGradient
+                colors={colors.gradients.cta}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                locations={[0, 0.49648, 0.97115]}
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  borderRadius: 32,
+                }}
+              />
+            ) : null}
             <Text
-              style={[
-                tw`text-white text-sm`,
-                { fontFamily: 'Outfit_400Regular' },
-              ]}
+              style={{
+                fontFamily: 'Outfit-Regular',
+                fontWeight: '400',
+                fontSize: 14, // From Figma
+                color: '#FFFFFF',
+                zIndex: 1,
+              }}
             >
               Create Account
             </Text>
-          </LinearGradient>
+          </View>
         </TouchableOpacity>
 
         {/* Or Divider */}
-        <View style={tw`flex-row items-center mb-5`}>
-          <View style={tw`flex-1 h-px bg-gray-300`} />
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 20,
+            width: 345,
+            alignSelf: 'center',
+          }}
+        >
+          <View style={{ flex: 1, height: 1, backgroundColor: '#E5E7EB' }} />
           <Text
-            style={[
-              tw`mx-3 text-sm text-[${colors.black}]`,
-              { fontFamily: 'Outfit_400Regular' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Regular',
+              fontWeight: '400',
+              fontSize: 14, // From Figma
+              color: colors.black, // #111113
+              marginHorizontal: 12, // Gap from Figma
+            }}
           >
             Or
           </Text>
-          <View style={tw`flex-1 h-px bg-gray-300`} />
+          <View style={{ flex: 1, height: 1, backgroundColor: '#E5E7EB' }} />
         </View>
 
         {/* Sign up with Google */}
         <TouchableOpacity
           onPress={handleGoogleSignUp}
           activeOpacity={0.7}
-          style={tw`mb-5`}
+          style={{ marginBottom: 20, width: 345, alignSelf: 'center' }}
         >
           <View
-            style={tw`flex-row items-center justify-center py-4 rounded-full border border-[#D2CDCD] bg-white`}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingVertical: 10, // From Figma
+              paddingHorizontal: 16, // From Figma
+              borderRadius: 32, // From Figma
+              borderWidth: 1,
+              borderColor: '#D2CDCD', // From Figma
+              backgroundColor: 'white',
+              gap: 12, // From Figma
+              height: 51,
+            }}
           >
             <Image
               source={require('../../assets/images/google_logo.png')}
-              style={tw`w-6 h-6 mr-3`}
+              style={{ width: 24, height: 24 }}
               resizeMode="contain"
             />
             <Text
-              style={[
-                tw`text-sm text-[${colors.black}]`,
-                { fontFamily: 'Outfit_400Regular' },
-              ]}
+              style={{
+                fontFamily: 'Outfit-Regular',
+                fontWeight: '400',
+                fontSize: 14, // From Figma
+                color: colors.black, // #111113
+              }}
             >
               Sign up with Google
             </Text>
@@ -295,10 +382,18 @@ export function SignUpFormScreen({ navigation, route }: SignUpFormScreenProps) {
         </TouchableOpacity>
 
         {/* Already have an account */}
-        <View style={tw`items-center`}>
-          <Text style={[tw`text-xs`, { fontFamily: 'Outfit_400Regular' }]}>
-            <Text style={tw`text-[#7F7F7F]`}>Already have an account ? </Text>
-            <Text style={tw`text-[#6A2374]`} onPress={handleLogin}>
+        <View style={{ alignItems: 'center' }}>
+          <Text
+            style={{
+              fontFamily: 'Outfit-Regular',
+              fontWeight: '400',
+              fontSize: 12,
+            }}
+          >
+            <Text style={{ color: colors.mutedGrey }}>
+              Already have an account ?{' '}
+            </Text>
+            <Text style={{ color: colors.purpleLink }} onPress={handleLogin}>
               Log in
             </Text>
           </Text>

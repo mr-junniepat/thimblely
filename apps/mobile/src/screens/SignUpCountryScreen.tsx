@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '@mobile/navigation';
+import { RootStackParamList } from '../App';
 import { colors } from '@thimblely/shared';
-import { ProgressIndicator } from '@mobile/components/ProgressIndicator';
+import { ProgressIndicator } from '../components/ProgressIndicator';
 import { ChevronLeft, Search } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import tw from 'twrnc';
@@ -34,7 +34,7 @@ const COUNTRIES = [
   { code: 'IN', name: 'India', flag: '🇮🇳' },
 ];
 
-export function SignUpCountryScreen({
+export default function SignUpCountryScreen({
   navigation,
   route,
 }: SignUpCountryScreenProps) {
@@ -85,40 +85,57 @@ export function SignUpCountryScreen({
 
       <View style={tw`flex-1 px-6 relative z-10`}>
         {/* Title */}
-        <View style={tw`mt-6 mb-6`}>
+        <View style={{ marginTop: 24, marginBottom: 24 }}>
           <Text
-            style={[
-              tw`text-4xl text-[${colors.black}] mb-4`,
-              { fontFamily: 'Outfit_500Medium' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Medium',
+              fontWeight: '700',
+              fontSize: 40,
+              color: colors.black,
+              marginBottom: 16, // Gap from Figma
+              letterSpacing: -1.6,
+              maxWidth: 320,
+            }}
           >
             Where In The{' '}
-            <Text style={tw`text-[${colors.complimentary}]`}>World</Text> Are
-            You ?
+            <Text style={{ color: colors.complimentary }}>World</Text> Are You ?
           </Text>
           <Text
-            style={[
-              tw`text-base text-[${colors.greyText}]`,
-              { fontFamily: 'Outfit_400Regular' },
-            ]}
+            style={{
+              fontWeight: '400',
+              fontSize: 16, // From Figma (Satoshi Variable Regular)
+              color: colors.greyText,
+              letterSpacing: -0.64,
+            }}
           >
             We'll customize your experience based on your location
           </Text>
         </View>
 
         {/* Search Input - Sticky */}
-        <View style={tw`mb-6 bg-white`}>
+        <View style={{ marginBottom: 24 }}>
           <View
-            style={tw`flex-row items-center bg-white/50 border border-[rgba(0,0,0,0.1)] rounded-full px-4 py-3`}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: 'rgba(0,0,0,0.1)', // From Figma
+              borderRadius: 32, // From Figma
+              padding: 12, // From Figma (all sides)
+              gap: 12, // From Figma
+            }}
           >
-            <Search size={16} color={colors.complimentary} />
+            <Search size={16} color={colors.black} />
             <TextInput
-              style={[
-                tw`flex-1 ml-3 text-sm text-[${colors.black}]`,
-                { fontFamily: 'Outfit_400Regular' },
-              ]}
+              style={{
+                flex: 1,
+                fontSize: 14, // From Figma (Satoshi Variable Regular)
+                fontWeight: '400',
+                color: colors.black, // #111113 from Figma
+                padding: 0, // Remove default padding
+              }}
               placeholder="Search"
-              placeholderTextColor={colors.black}
+              placeholderTextColor={colors.black} // #111113 from Figma (not grey!)
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
@@ -129,7 +146,7 @@ export function SignUpCountryScreen({
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={tw`flex-1`}
-          contentContainerStyle={tw`gap-4 pb-6`}
+          contentContainerStyle={{ gap: 16, paddingBottom: 24 }}
         >
           {filteredCountries.map((country) => (
             <TouchableOpacity
@@ -138,21 +155,31 @@ export function SignUpCountryScreen({
               activeOpacity={0.7}
             >
               <View
-                style={tw.style(
-                  `bg-white/50 border border-[rgba(0,0,0,0.1)] rounded-xl px-3 py-4 flex-row items-center gap-3`,
-                  selectedCountry === country.code && {
-                    borderColor: colors.complimentary,
-                    borderWidth: 2,
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                  }
-                )}
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.5)', // From Figma
+                  borderWidth: 1,
+                  borderColor:
+                    selectedCountry === country.code
+                      ? colors.complimentary
+                      : 'rgba(0,0,0,0.1)', // From Figma
+                  borderRadius: 10, // From Figma
+                  paddingHorizontal: 12, // From Figma
+                  paddingVertical: 16, // From Figma
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 12, // From Figma
+                }}
               >
-                <Text style={tw`text-lg`}>{country.flag}</Text>
+                <Text style={{ fontSize: 18, width: 18, height: 18 }}>
+                  {country.flag}
+                </Text>
                 <Text
-                  style={[
-                    tw`text-base text-[${colors.black}] flex-1`,
-                    { fontFamily: 'Outfit_400Regular' },
-                  ]}
+                  style={{
+                    fontSize: 16, // From Figma (Satoshi Variable Regular)
+                    fontWeight: '400',
+                    color: colors.black,
+                    flex: 1,
+                  }}
                 >
                   {country.name}
                 </Text>
@@ -169,26 +196,45 @@ export function SignUpCountryScreen({
           disabled={!selectedCountry}
           activeOpacity={0.8}
         >
-          <LinearGradient
-            colors={
-              selectedCountry
-                ? colors.gradients.cta
-                : ['#E8E8E8', '#E8E8E8', '#E8E8E8']
-            }
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            locations={[0, 0.49648, 0.97115]}
-            style={tw`py-4 rounded-full items-center justify-center`}
+          <View
+            style={{
+              backgroundColor: selectedCountry ? undefined : '#E8E8E8', // Disabled color from Figma
+              borderRadius: 32,
+              paddingVertical: 12,
+              paddingHorizontal: 8,
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 51,
+            }}
           >
+            {selectedCountry ? (
+              <LinearGradient
+                colors={colors.gradients.cta}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                locations={[0, 0.49648, 0.97115]}
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  borderRadius: 32,
+                }}
+              />
+            ) : null}
             <Text
-              style={[
-                tw`text-sm ${selectedCountry ? 'text-white' : 'text-white'}`,
-                { fontFamily: 'Outfit_400Regular' },
-              ]}
+              style={{
+                fontFamily: 'Outfit-Regular',
+                fontWeight: '400',
+                fontSize: 14,
+                color: '#FFFFFF',
+                zIndex: 1,
+              }}
             >
               Next
             </Text>
-          </LinearGradient>
+          </View>
         </TouchableOpacity>
       </View>
     </View>

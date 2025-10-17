@@ -7,9 +7,9 @@ import {
   ImageBackground,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@mobile/navigation';
+import { RootStackParamList } from '../App';
 import { colors } from '@thimblely/shared';
-import { ProgressIndicator } from '@mobile/components/ProgressIndicator';
+import { ProgressIndicator, GradientButton } from '../components';
 import {
   ShoppingBag,
   Building2,
@@ -25,7 +25,7 @@ type SignUpUserTypeScreenProps = {
 
 type UserType = 'customer' | 'business' | null;
 
-export function SignUpUserTypeScreen({
+export default function SignUpUserTypeScreen({
   navigation,
 }: SignUpUserTypeScreenProps) {
   const [selectedType, setSelectedType] = useState<UserType>(null);
@@ -70,21 +70,29 @@ export function SignUpUserTypeScreen({
         showsVerticalScrollIndicator={false}
       >
         {/* Title */}
-        <View style={tw`mt-6 mb-10`}>
+        <View style={{ marginTop: 24, marginBottom: 40 }}>
           <Text
-            style={[
-              tw`text-4xl text-[${colors.black}] mb-4`,
-              { fontFamily: 'Outfit_500Medium' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Medium',
+              fontWeight: '500', // Medium weight from Figma
+              fontSize: 40,
+              color: colors.black,
+              marginBottom: 16,
+              letterSpacing: -1.6,
+              maxWidth: 320,
+            }}
           >
             How would you like to use{' '}
-            <Text style={tw`text-[${colors.complimentary}]`}>Thimblely</Text> ?
+            <Text style={{ color: colors.complimentary }}>Thimblely</Text> ?
           </Text>
           <Text
-            style={[
-              tw`text-base text-[${colors.greyText}]`,
-              { fontFamily: 'Outfit_400Regular' },
-            ]}
+            style={{
+              fontFamily: 'Outfit-Regular',
+              fontWeight: '400', // Regular weight from Figma
+              fontSize: 16,
+              color: colors.greyText,
+              letterSpacing: -0.64,
+            }}
           >
             Pick the option that best describes you. You can always create
             another account type later.
@@ -92,37 +100,44 @@ export function SignUpUserTypeScreen({
         </View>
 
         {/* User Type Options */}
-        <View style={tw`gap-2`}>
+        <View style={{ gap: 8 }}>
           {/* Customer Option */}
           <TouchableOpacity
             onPress={() => setSelectedType('customer')}
             activeOpacity={0.7}
           >
             <View
-              style={tw`bg-white border ${
-                selectedType === 'customer'
-                  ? 'border-[${colors.complimentary}] border-2'
-                  : 'border-[rgba(0,0,0,0.1)]'
-              } rounded-xl p-4`}
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.5)', // From Figma
+                borderWidth: 1,
+                borderColor:
+                  selectedType === 'customer'
+                    ? colors.complimentary
+                    : 'rgba(0,0,0,0.1)', // From Figma
+                borderRadius: 10, // From Figma
+                padding: 16, // From Figma
+                gap: 8, // From Figma
+              }}
             >
-              <View
-                style={tw`w-12 h-12 rounded-xl items-center justify-center mb-3`}
-              >
+              <View style={{ width: 24, height: 24 }}>
                 <ShoppingBasket size={24} color={colors.complimentary} />
               </View>
               <Text
-                style={[
-                  tw`text-sm text-[${colors.black}] mb-2 font-bold`,
-                  { fontFamily: 'Outfit_600SemiBold' },
-                ]}
+                style={{
+                  fontSize: 14, // From Figma
+                  fontWeight: '700', // Bold from Figma (Satoshi Variable Bold)
+                  color: colors.black,
+                }}
               >
                 Customer
               </Text>
               <Text
-                style={[
-                  tw`text-xs text-[${colors.greyText}] leading-5`,
-                  { fontFamily: 'Outfit_400Regular' },
-                ]}
+                style={{
+                  fontSize: 12, // From Figma
+                  fontWeight: '400', // Regular from Figma (Satoshi Variable Regular)
+                  color: colors.greyText,
+                  lineHeight: 12, // 100% line height from Figma
+                }}
               >
                 Discover styles, connect with skilled tailors, and order unique
                 outfits crafted to fit you perfectly
@@ -136,30 +151,37 @@ export function SignUpUserTypeScreen({
             activeOpacity={0.7}
           >
             <View
-              style={tw`bg-white border ${
-                selectedType === 'business'
-                  ? 'border-[${colors.complimentary}] border-2'
-                  : 'border-[rgba(0,0,0,0.1)]'
-              } rounded-xl p-4`}
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.5)', // From Figma
+                borderWidth: 1,
+                borderColor:
+                  selectedType === 'business'
+                    ? colors.complimentary
+                    : 'rgba(0,0,0,0.1)', // From Figma
+                borderRadius: 10, // From Figma
+                padding: 16, // From Figma
+                gap: 8, // From Figma
+              }}
             >
-              <View
-                style={tw`w-12 h-12 bg-[${colors.lightPink}] rounded-xl items-center justify-center mb-3`}
-              >
+              <View style={{ width: 24, height: 24 }}>
                 <Building2 size={24} color={colors.complimentary} />
               </View>
               <Text
-                style={[
-                  tw`text-sm text-[${colors.black}] mb-2 font-bold`,
-                  { fontFamily: 'Outfit_600SemiBold' },
-                ]}
+                style={{
+                  fontSize: 14, // From Figma
+                  fontWeight: '700', // Bold from Figma (Satoshi Variable Bold)
+                  color: colors.black,
+                }}
               >
                 Business Owner
               </Text>
               <Text
-                style={[
-                  tw`text-xs text-[${colors.greyText}] leading-5`,
-                  { fontFamily: 'Outfit_400Regular' },
-                ]}
+                style={{
+                  fontSize: 12, // From Figma
+                  fontWeight: '400', // Regular from Figma (Satoshi Variable Regular)
+                  color: colors.greyText,
+                  lineHeight: 12, // 100% line height from Figma
+                }}
               >
                 Showcase your work, attract customers worldwide, and grow your
                 fashion brand with Stitch-meister tools.
@@ -171,30 +193,11 @@ export function SignUpUserTypeScreen({
 
       {/* Next Button */}
       <View style={tw`p-6 pb-10 relative z-10`}>
-        <TouchableOpacity
+        <GradientButton
+          title="Next"
           onPress={handleNext}
           disabled={!selectedType}
-          activeOpacity={0.8}
-        >
-          <LinearGradient
-            colors={colors.gradients.cta}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            locations={[0, 0.49648, 0.97115]}
-            style={tw`py-4 rounded-full items-center justify-center ${
-              !selectedType ? 'opacity-50' : ''
-            }`}
-          >
-            <Text
-              style={[
-                tw`text-white text-sm`,
-                { fontFamily: 'Outfit_400Regular' },
-              ]}
-            >
-              Next
-            </Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        />
       </View>
     </View>
   );
