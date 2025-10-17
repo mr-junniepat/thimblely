@@ -10,6 +10,7 @@ const colors = {
 import tw from 'twrnc';
 import { Home, Globe, Star, MapPin, ShoppingCart } from 'lucide-react-native';
 import { faker } from '@faker-js/faker';
+import Chip from './Chip';
 
 // Generate mock manufacturer data matching Figma exactly
 const manufacturers = Array.from({ length: 8 }, (_, i) => ({
@@ -145,34 +146,13 @@ export default function ManufacturersComponent({
           }}
         >
           {categories.map((category) => (
-            <TouchableOpacity
+            <Chip
               key={category}
+              label={category}
+              active={activeCategory === category}
               onPress={() => setActiveCategory(category)}
-              style={{
-                backgroundColor:
-                  activeCategory === category
-                    ? colors.complimentary
-                    : '#F5F5F7',
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                borderRadius: 32,
-                minWidth: 65,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '400',
-                  color:
-                    activeCategory === category ? 'white' : colors.greyText,
-                  fontFamily: 'Outfit-Regular',
-                }}
-              >
-                {category}
-              </Text>
-            </TouchableOpacity>
+              size="medium"
+            />
           ))}
         </View>
       </View>

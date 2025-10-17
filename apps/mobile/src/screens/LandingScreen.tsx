@@ -345,9 +345,7 @@ export default function LandingScreen({ navigation }: LandingScreenProps) {
         />
       ))}
 
-      {/* Main content - Following Figma design exactly */}
       <View style={tw`flex-1 items-center pb-8`}>
-        {/* Logo - positioned at top center (y: 221px in Figma) */}
         <View style={tw.style(`absolute items-center`, { top: 221 })}>
           <Image
             source={require('../../assets/images/logo.png')}
@@ -357,7 +355,6 @@ export default function LandingScreen({ navigation }: LandingScreenProps) {
           />
         </View>
 
-        {/* App Name - positioned at y: 350px in Figma */}
         <View style={tw.style(`absolute items-center w-full`, { top: 350 })}>
           <Text
             style={[
@@ -369,27 +366,22 @@ export default function LandingScreen({ navigation }: LandingScreenProps) {
           </Text>
         </View>
 
-        {/* Buttons Container - positioned at y: 706px in Figma */}
         <View
-          style={tw.style(`absolute w-full`, {
-            top: 706,
-            paddingHorizontal: 35,
+          style={tw.style(`absolute w-full px-[35px]`, {
+            bottom: 115,
           })}
         >
           <View style={{ gap: 16, width: '100%' }}>
-            {/* Log in Button - White background from Figma */}
             <Button variant="secondary" onPress={handleLogin}>
               Log in
             </Button>
 
-            {/* Sign up Button - Dark background (#19051A) from Figma */}
             <Button variant="primary" onPress={handleSignUp}>
               Sign up
             </Button>
           </View>
         </View>
 
-        {/* Terms and Privacy - positioned at bottom with padding */}
         <View style={tw.style(`absolute w-full px-8.75 pb-10`, { bottom: 0 })}>
           <Text
             style={[

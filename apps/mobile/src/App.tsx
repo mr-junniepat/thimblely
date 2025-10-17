@@ -20,6 +20,7 @@ import SignUpVerifyScreen from './screens/SignUpVerifyScreen';
 import MainTabs from './navigation/MainTabs';
 import ManufacturerDetailScreen from './screens/ManufacturerDetailScreen';
 import InfluencerDetailScreen from './screens/InfluencerDetailScreen';
+import CalendarScreen from './screens/workspaceSubModules/CalendarScreen';
 
 export type RootStackParamList = {
   Landing: undefined;
@@ -31,6 +32,7 @@ export type RootStackParamList = {
   MainTabs: undefined;
   ManufacturerDetail: { manufacturer: any };
   InfluencerDetail: { influencer: any };
+  Calendar: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -81,6 +83,7 @@ export default function App() {
             name="InfluencerDetail"
             component={InfluencerDetailScreen}
           />
+          <Stack.Screen name="Calendar" component={CalendarScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

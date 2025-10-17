@@ -1,84 +1,94 @@
 import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
+import { LucideIcon } from 'lucide-react-native';
+import tw from 'twrnc';
+
 // Import colors directly from the source file
 const colors = {
   complimentary: '#A30552',
   greyText: '#68666F',
   black: '#111113',
 };
-import { LucideIcon } from 'lucide-react-native';
 
 interface ChipProps {
   label: string;
-  icon?: LucideIcon;
   active?: boolean;
   onPress?: () => void;
   size?: 'small' | 'medium' | 'large';
-  variant?: 'default' | 'outline' | 'filled';
+  variant?: 'default' | 'outline';
+  icon?: LucideIcon;
+  iconPosition?: 'left' | 'right';
 }
 
 export default function Chip({
   label,
-  icon: Icon,
   active = false,
   onPress,
   size = 'medium',
   variant = 'default',
+  icon: Icon,
+  iconPosition = 'left',
 }: ChipProps) {
   const getSizeStyles = () => {
     switch (size) {
       case 'small':
         return {
-          paddingHorizontal: 8,
-          paddingVertical: 4,
+          paddingHorizontal: 12,
+          paddingVertical: 6,
           fontSize: 10,
+          minWidth: 50,
           iconSize: 12,
-          borderRadius: 32,
+          gap: 4,
+          height: 30,
         };
-      case 'large':
-        return {
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-          fontSize: 16,
-          iconSize: 18,
-          borderRadius: 32,
-        };
-      default: // medium
+      case 'medium':
         return {
           paddingHorizontal: 16,
           paddingVertical: 8,
           fontSize: 12,
+          minWidth: 65,
           iconSize: 14,
-          borderRadius: 32,
+          gap: 6,
+          height: 32,
+        };
+      case 'large':
+        return {
+          paddingHorizontal: 20,
+          paddingVertical: 10,
+          fontSize: 14,
+          minWidth: 80,
+          iconSize: 16,
+          gap: 8,
+          height: 38,
+        };
+      default:
+        return {
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          fontSize: 12,
+          minWidth: 65,
+          iconSize: 14,
+          gap: 6,
         };
     }
   };
 
   const getVariantStyles = () => {
-    switch (variant) {
-      case 'outline':
-        return {
-          backgroundColor: 'transparent',
-          borderWidth: 1,
-          borderColor: active ? colors.complimentary : colors.greyText,
-          textColor: active ? colors.complimentary : colors.greyText,
-          iconColor: active ? colors.complimentary : colors.greyText,
-        };
-      case 'filled':
-        return {
-          backgroundColor: active ? colors.complimentary : '#F5F5F7',
-          borderWidth: 0,
-          textColor: active ? 'white' : colors.greyText,
-          iconColor: active ? 'white' : colors.greyText,
-        };
-      default: // default
-        return {
-          backgroundColor: active ? colors.complimentary : '#F5F5F7',
-          borderWidth: 0,
-          textColor: active ? 'white' : colors.greyText,
-          iconColor: active ? 'white' : colors.greyText,
-        };
+    if (variant === 'outline') {
+      return {
+        backgroundColor: active ? colors.complimentary : 'transparent',
+        borderWidth: 1,
+        borderColor: active ? colors.complimentary : colors.greyText,
+        textColor: active ? 'white' : colors.greyText,
+      };
     }
+
+    return {
+      backgroundColor: active ? colors.complimentary : '#F5F5F7',
+      borderWidth: 0,
+      borderColor: 'transparent',
+      textColor: active ? 'white' : colors.greyText,
+    };
   };
 
   const sizeStyles = getSizeStyles();
@@ -87,34 +97,42 @@ export default function Chip({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: sizeStyles.paddingHorizontal,
-        paddingVertical: sizeStyles.paddingVertical,
-        backgroundColor: variantStyles.backgroundColor,
-        borderWidth: variantStyles.borderWidth,
-        borderColor: variantStyles.borderColor,
-        borderRadius: sizeStyles.borderRadius,
-        gap: Icon ? 8 : 0,
-        minWidth: 65,
-      }}
-      activeOpacity={0.7}
+      style={[
+        tw`flex-row items-center justify-center rounded-full`,
+        {
+          backgroundColor: variantStyles.backgroundColor,
+          paddingHorizontal: sizeStyles.paddingHorizontal,
+          paddingVertical: sizeStyles.paddingVertical,
+          minWidth: sizeStyles.minWidth,
+          height: sizeStyles.height,
+          borderWidth: variantStyles.borderWidth,
+          borderColor: variantStyles.borderColor,
+          gap: sizeStyles.gap,
+        },
+      ]}
     >
-      {Icon && (
-        <Icon size={sizeStyles.iconSize} color={variantStyles.iconColor} />
+      {Icon && iconPosition === 'left' && (
+        <Icon size={sizeStyles.iconSize} color={variantStyles.textColor} />
       )}
+
       <Text
-        style={{
-          fontSize: sizeStyles.fontSize,
-          fontWeight: '400',
-          color: variantStyles.textColor,
-          fontFamily: 'Outfit-Regular',
-        }}
+        style={[
+          tw`font-normal`,
+          {
+            fontSize: sizeStyles.fontSize,
+            color: variantStyles.textColor,
+            fontFamily: 'Satoshi Variable',
+            textAlignVertical: 'center',
+            includeFontPadding: false,
+          },
+        ]}
       >
         {label}
       </Text>
+
+      {Icon && iconPosition === 'right' && (
+        <Icon size={sizeStyles.iconSize} color={variantStyles.textColor} />
+      )}
     </TouchableOpacity>
   );
 }

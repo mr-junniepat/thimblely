@@ -105,7 +105,6 @@ export default function InfluencersComponent({
 
   return (
     <View style={tw`flex-1 bg-white`}>
-      {/* Trending Influencers Section - Exact Figma layout */}
       <View
         style={{
           paddingHorizontal: 24,
@@ -125,7 +124,6 @@ export default function InfluencersComponent({
           Trending Influencers
         </Text>
 
-        {/* Influencers Grid - Exact Figma 2-column layout */}
         <View style={{ gap: 8 }}>
           {/* Row 1 */}
           <View style={{ flexDirection: 'row', gap: 8 }}>

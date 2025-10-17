@@ -1,50 +1,54 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  TextInput,
-} from 'react-native';
-// Import colors directly from the source file
-const colors = {
-  complimentary: '#A30552',
-  greyText: '#68666F',
-  black: '#111113',
-};
+import { View, ScrollView } from 'react-native';
 import tw from 'twrnc';
-import { Header, Chip } from '../../components';
-import {
-  Heart,
-  MessageCircle,
-  Send,
-  Bookmark,
-  Smile,
-  Home,
-  Search as SearchIcon,
-  Briefcase,
-  User,
-  ShoppingBag,
-  MapPin,
-  Star,
-} from 'lucide-react-native';
+import { Header, PostCard, StoryItem, Chip } from '../../components';
 import { faker } from '@faker-js/faker';
+import { Frame, Gem, Shirt, Users } from 'lucide-react-native';
 
 // Mock data
 const stories = [
-  { id: '1', username: 'Fashionista_style', avatar: faker.image.avatar() },
-  { id: '2', username: 'SewingMachine', avatar: faker.image.avatar() },
-  { id: '3', username: 'textile_artist', avatar: faker.image.avatar() },
-  { id: '4', username: 'craftcorner', avatar: faker.image.avatar() },
-  { id: '5', username: 'textile_artist', avatar: faker.image.avatar() },
+  {
+    id: '1',
+    username: 'Fashionista_style',
+    avatar: faker.image.avatar(),
+    isViewed: false,
+    isActive: true,
+  },
+  {
+    id: '2',
+    username: 'SewingMachine',
+    avatar: faker.image.avatar(),
+    isViewed: true,
+    isActive: false,
+  },
+  {
+    id: '3',
+    username: 'textile_artist',
+    avatar: faker.image.avatar(),
+    isViewed: true,
+    isActive: false,
+  },
+  {
+    id: '4',
+    username: 'craftcorner',
+    avatar: faker.image.avatar(),
+    isViewed: false,
+    isActive: false,
+  },
+  {
+    id: '5',
+    username: 'designer_pro',
+    avatar: faker.image.avatar(),
+    isViewed: true,
+    isActive: false,
+  },
 ];
 
 const filters = [
-  { id: 'all', label: 'All', icon: null, active: true },
-  { id: 'materials', label: 'Materials', icon: ShoppingBag },
-  { id: 'clothes', label: 'Clothes', icon: ShoppingBag },
-  { id: 'creators', label: 'Creators', icon: User },
+  { id: 'all', label: 'All', icon: Frame },
+  { id: 'equipment', label: 'Equipment', icon: Gem },
+  { id: 'fabrics', label: 'Fabrics', icon: Shirt },
+  { id: 'leather', label: 'Leather', icon: Users },
 ];
 
 const posts = [
@@ -64,6 +68,7 @@ const posts = [
     likes: 322,
     comments: 322,
     shares: 322,
+    category: 'all', // Non-product post
   },
   {
     id: '2',
@@ -82,10 +87,11 @@ const posts = [
       originalPrice: 65,
     },
     caption:
-      'Latest street style inspiration from Paris Fashion Week. The perfect blend of vintage and modern aesthetics. #fashion #streetstyle #vintage',
-    likes: 322,
-    comments: 322,
-    shares: 322,
+      'Premium organic cotton fabric perfect for sustainable fashion. Available in multiple colors and weights. #fabric #organic #sustainable',
+    likes: 156,
+    comments: 23,
+    shares: 45,
+    category: 'fabrics',
   },
   {
     id: '3',
@@ -106,15 +112,104 @@ const posts = [
     },
     caption:
       'Custom three-piece suit completed for a wedding. Hand-stitched details and perfect fit guaranteed. #tailoring #custom #wedding',
-    likes: 322,
-    comments: 322,
-    shares: 322,
+    likes: 89,
+    comments: 12,
+    shares: 34,
+    category: 'all', // Service post
+  },
+  {
+    id: '4',
+    user: {
+      username: 'SewingMachinePro',
+      avatar: faker.image.avatar(),
+      badge: { text: 'Equipment Dealer', color: '#FF6B35' },
+      location: 'New York, NY',
+      rating: { score: 4.7, count: 567 },
+    },
+    timeAgo: '8h ago',
+    image: faker.image.urlPicsumPhotos({ width: 430, height: 210 }),
+    product: {
+      title: 'Professional Industrial Sewing Machine',
+      price: 2500,
+      originalPrice: 3200,
+    },
+    caption:
+      'Industrial-grade sewing machine perfect for professional tailors. High-speed stitching with precision control. #sewing #equipment #professional',
+    likes: 234,
+    comments: 45,
+    shares: 67,
+    category: 'equipment',
+  },
+  {
+    id: '5',
+    user: {
+      username: 'LeatherCraft_Master',
+      avatar: faker.image.avatar(),
+      badge: { text: 'Leather Supplier', color: '#8B4513' },
+      location: 'Milan, Italy',
+      rating: { score: 4.9, count: 1234 },
+    },
+    timeAgo: '10h ago',
+    image: faker.image.urlPicsumPhotos({ width: 430, height: 210 }),
+    product: {
+      title: 'Italian Full-Grain Leather Hide',
+      price: 180,
+      originalPrice: 220,
+    },
+    caption:
+      'Premium Italian leather hide perfect for luxury bags and accessories. Soft, durable, and beautifully textured. #leather #luxury #craft',
+    likes: 445,
+    comments: 78,
+    shares: 123,
+    category: 'leather',
+  },
+  {
+    id: '6',
+    user: {
+      username: 'FabricWorld_Store',
+      avatar: faker.image.avatar(),
+      badge: { text: 'Fabric Retailer', color: '#155DFC' },
+      location: 'Los Angeles, CA',
+      rating: { score: 4.6, count: 890 },
+    },
+    timeAgo: '12h ago',
+    image: faker.image.urlPicsumPhotos({ width: 430, height: 210 }),
+    product: {
+      title: 'Silk Chiffon Fabric - Designer Collection',
+      price: 85,
+      originalPrice: 120,
+    },
+    caption:
+      'Luxurious silk chiffon in stunning colors. Perfect for evening wear and bridal gowns. Limited stock available. #silk #chiffon #luxury',
+    likes: 189,
+    comments: 34,
+    shares: 56,
+    category: 'fabrics',
   },
 ];
 
 export default function FeedScreen() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [comment, setComment] = useState('');
+  const [storyStates, setStoryStates] = useState(stories);
+
+  const handleStoryPress = (storyId: string) => {
+    setStoryStates((prev) =>
+      prev.map((story) =>
+        story.id === storyId
+          ? { ...story, isViewed: true, isActive: false }
+          : story
+      )
+    );
+  };
+
+  // Filter posts based on active filter
+  const filteredPosts = posts.filter((post) => {
+    if (activeFilter === 'all') {
+      return true;
+    }
+    return post.category === activeFilter;
+  });
 
   return (
     <View style={tw`flex-1 bg-white`}>
@@ -128,21 +223,19 @@ export default function FeedScreen() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={tw`px-6 gap-6 py-4`}
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          paddingVertical: 16,
+          gap: 24,
+          height: 160,
+        }}
       >
-        {stories.map((story) => (
-          <TouchableOpacity key={story.id} style={tw`items-center gap-2`}>
-            <View style={tw`w-[75px] h-[75px] rounded-full overflow-hidden`}>
-              <Image
-                source={{ uri: story.avatar }}
-                style={tw`w-full h-full`}
-                resizeMode="cover"
-              />
-            </View>
-            <Text style={{ fontSize: 10, fontWeight: '400', color: 'black' }}>
-              {story.username}
-            </Text>
-          </TouchableOpacity>
+        {storyStates.map((story) => (
+          <StoryItem
+            key={story.id}
+            story={story}
+            onPress={() => handleStoryPress(story.id)}
+          />
         ))}
       </ScrollView>
 
@@ -150,320 +243,45 @@ export default function FeedScreen() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={tw`px-6 gap-2 py-4`}
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          paddingVertical: 5,
+          gap: 8,
+          height: 55,
+          width: '100%',
+        }}
       >
         {filters.map((filter) => (
           <Chip
             key={filter.id}
             label={filter.label}
-            icon={filter.icon || undefined}
+            icon={filter.icon}
             active={activeFilter === filter.id}
             onPress={() => setActiveFilter(filter.id)}
-            size="medium"
+            size="small"
+            iconPosition="left"
           />
         ))}
       </ScrollView>
 
       {/* Feed Posts */}
       <ScrollView showsVerticalScrollIndicator={false}>
-        {posts.map((post) => (
-          <View
+        {filteredPosts.map((post) => (
+          <PostCard
             key={post.id}
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: '#F3F4F6',
-              paddingBottom: 16,
-              backgroundColor: 'white',
+            post={{
+              ...post,
+              user: {
+                ...post.user,
+                location:
+                  post.user.location === null ? undefined : post.user.location,
+                rating:
+                  post.user.rating === null ? undefined : post.user.rating,
+              },
             }}
-          >
-            {/* Post Header */}
-            <View style={tw`px-6 py-3.5 flex-row items-center justify-between`}>
-              <View style={tw`flex-row items-center gap-2.5`}>
-                {/* Avatar */}
-                <View style={tw`w-10 h-10 rounded-full overflow-hidden`}>
-                  <Image
-                    source={{ uri: post.user.avatar }}
-                    style={tw`w-full h-full`}
-                    resizeMode="cover"
-                  />
-                </View>
-
-                {/* User Info */}
-                <View style={tw`gap-1`}>
-                  <View style={tw`flex-row items-center gap-1`}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontWeight: '400',
-                        color: '#0A0A0A',
-                      }}
-                    >
-                      {post.user.username}
-                    </Text>
-                    <View
-                      style={{
-                        backgroundColor: '#F3F4F6',
-                        paddingHorizontal: 5.25,
-                        paddingVertical: 1.75,
-                        borderRadius: 999,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          fontWeight: '400',
-                          color: post.user.badge.color,
-                        }}
-                      >
-                        {post.user.badge.text}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View style={tw`flex-row items-center gap-2.5`}>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: '400',
-                        color: '#6A7282',
-                      }}
-                    >
-                      {post.timeAgo}
-                    </Text>
-                    {post.user.location && (
-                      <>
-                        <Text style={{ fontSize: 12, color: '#6A7282' }}>
-                          •
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontWeight: '400',
-                            color: '#6A7282',
-                          }}
-                        >
-                          {post.user.location}
-                        </Text>
-                      </>
-                    )}
-                    {post.user.rating && (
-                      <>
-                        <Text style={{ fontSize: 12, color: '#6A7282' }}>
-                          ⭐
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontWeight: '400',
-                            color: '#6A7282',
-                          }}
-                        >
-                          {post.user.rating.score}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontWeight: '400',
-                            color: '#6A7282',
-                          }}
-                        >
-                          ({post.user.rating.count})
-                        </Text>
-                      </>
-                    )}
-                  </View>
-                </View>
-              </View>
-
-              {/* More Options */}
-              <TouchableOpacity>
-                <Text style={{ fontSize: 20, color: colors.greyText }}>⋯</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Post Image */}
-            <View style={{ position: 'relative' }}>
-              <Image
-                source={{ uri: post.image }}
-                style={{ width: '100%', height: 210 }}
-                resizeMode="cover"
-              />
-              {post.product?.badge && (
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: 10.5,
-                    left: 10.5,
-                    backgroundColor: '#00C950',
-                    paddingHorizontal: 7,
-                    paddingVertical: 3.5,
-                    borderRadius: 999,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      fontWeight: '400',
-                      color: 'white',
-                      lineHeight: 15,
-                    }}
-                  >
-                    {post.product.badge}
-                  </Text>
-                </View>
-              )}
-            </View>
-
-            {/* Product Info (if applicable) */}
-            {post.product && (
-              <View style={tw`px-6 py-4 gap-4`}>
-                <Text
-                  style={{ fontSize: 14, fontWeight: '400', color: '#0A0A0A' }}
-                >
-                  {post.product.title}
-                </Text>
-                <View style={tw`flex-row items-center justify-between`}>
-                  <View style={tw`flex-row items-center gap-1.5`}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontWeight: '700',
-                        color: colors.complimentary,
-                      }}
-                    >
-                      ${post.product.price}
-                    </Text>
-                    {post.product.originalPrice && (
-                      <Text
-                        style={{
-                          fontSize: post.product.originalPrice > 100 ? 10 : 12,
-                          fontWeight: '400',
-                          color: '#6A7282',
-                          textDecorationLine: 'line-through',
-                        }}
-                      >
-                        ${post.product.originalPrice}
-                      </Text>
-                    )}
-                  </View>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: colors.complimentary,
-                      paddingHorizontal: 20,
-                      paddingVertical: 8,
-                      borderRadius: 999,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 4,
-                    }}
-                  >
-                    <ShoppingBag size={12} color="white" />
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontWeight: '400',
-                        color: 'white',
-                      }}
-                    >
-                      Buy now
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-
-            {/* Interactions */}
-            <View style={tw`px-6 gap-4`}>
-              <View style={tw`flex-row items-center justify-between`}>
-                <View style={tw`flex-row items-end gap-3`}>
-                  <View style={tw`flex-row items-center gap-1`}>
-                    <Heart size={24} color={colors.greyText} />
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: '400',
-                        color: colors.greyText,
-                      }}
-                    >
-                      {post.likes}
-                    </Text>
-                  </View>
-                  <View style={tw`flex-row items-center gap-2`}>
-                    <MessageCircle size={24} color={colors.greyText} />
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: '400',
-                        color: colors.greyText,
-                      }}
-                    >
-                      {post.comments}
-                    </Text>
-                  </View>
-                  <View style={tw`flex-row items-center gap-2`}>
-                    <Send size={24} color={colors.greyText} />
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: '400',
-                        color: colors.greyText,
-                      }}
-                    >
-                      {post.shares}
-                    </Text>
-                  </View>
-                </View>
-                <Bookmark size={24} color={colors.greyText} />
-              </View>
-
-              {/* Caption */}
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '400',
-                  color: '#4A5565',
-                  lineHeight: 18,
-                }}
-              >
-                {post.caption}
-              </Text>
-
-              {/* Comment Input */}
-              <View style={tw`flex-row items-center gap-3`}>
-                <Smile size={20} color={colors.greyText} />
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: '#F9FAFB',
-                    borderRadius: 999,
-                    paddingHorizontal: 12,
-                    paddingVertical: 12,
-                  }}
-                >
-                  <TextInput
-                    placeholder="Add a comment..."
-                    placeholderTextColor={colors.greyText}
-                    style={{
-                      fontSize: 12,
-                      fontWeight: '400',
-                      color: colors.black,
-                    }}
-                    value={comment}
-                    onChangeText={setComment}
-                  />
-                </View>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: '400',
-                    color: colors.complimentary,
-                  }}
-                >
-                  Post
-                </Text>
-              </View>
-            </View>
-          </View>
+            comment={comment}
+            onCommentChange={setComment}
+          />
         ))}
       </ScrollView>
     </View>
