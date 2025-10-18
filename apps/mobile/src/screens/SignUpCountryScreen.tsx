@@ -4,21 +4,28 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  TextInput,
   ImageBackground,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../App';
-import { colors } from '@thimblely/shared';
-import { ProgressIndicator } from '../components/ProgressIndicator';
-import { ChevronLeft, Search } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import tw from 'twrnc';
+import { RootStackParamList } from '../App';
+import { ProgressIndicator, SearchBar } from '../components';
+import { ChevronLeft } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+
+// Import colors directly
+const colors = {
+  complimentary: '#A30552',
+  black: '#111113',
+  greyText: '#68666F',
+  gradients: {
+    cta: ['#A30552', '#56062D', '#A30552'] as const,
+  },
+};
 
 type SignUpCountryScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'SignUpCountry'>;
-  route: RouteProp<RootStackParamList, 'SignUpCountry'>;
+  route: any;
 };
 
 const COUNTRIES = [
@@ -112,35 +119,13 @@ export default function SignUpCountryScreen({
           </Text>
         </View>
 
-        {/* Search Input - Sticky */}
-        <View style={{ marginBottom: 24 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderWidth: 1,
-              borderColor: 'rgba(0,0,0,0.1)', // From Figma
-              borderRadius: 32, // From Figma
-              padding: 12, // From Figma (all sides)
-              gap: 12, // From Figma
-            }}
-          >
-            <Search size={16} color={colors.black} />
-            <TextInput
-              style={{
-                flex: 1,
-                fontSize: 14, // From Figma (Satoshi Variable Regular)
-                fontWeight: '400',
-                color: colors.black, // #111113 from Figma
-                padding: 0, // Remove default padding
-              }}
-              placeholder="Search"
-              placeholderTextColor={colors.black} // #111113 from Figma (not grey!)
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-          </View>
-        </View>
+        {/* Search Input */}
+        <SearchBar
+          placeholder="Search"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          containerStyle={{ marginBottom: 24 }}
+        />
 
         {/* Country List - Card Style - Scrollable */}
         <ScrollView

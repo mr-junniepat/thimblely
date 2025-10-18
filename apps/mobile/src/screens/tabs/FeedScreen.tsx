@@ -1,7 +1,20 @@
-import React, { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  FlatList,
+} from 'react-native';
 import tw from 'twrnc';
-import { Header, PostCard, StoryItem, Chip } from '../../components';
+import {
+  Header,
+  PostCard,
+  StoryItem,
+  Chip,
+  Toast,
+  useToast,
+} from '../../components';
 import { faker } from '@faker-js/faker';
 import { Frame, Gem, Shirt, Users } from 'lucide-react-native';
 
@@ -192,8 +205,9 @@ export default function FeedScreen() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [comment, setComment] = useState('');
   const [storyStates, setStoryStates] = useState(stories);
+  const { toast, showToast, hideToast } = useToast();
 
-  const handleStoryPress = (storyId: string) => {
+  const handleStoryPress = useCallback((storyId: string) => {
     setStoryStates((prev) =>
       prev.map((story) =>
         story.id === storyId
@@ -201,15 +215,96 @@ export default function FeedScreen() {
           : story
       )
     );
-  };
+  }, []);
+
+  const handleFilterPress = useCallback((filterId: string) => {
+    setActiveFilter(filterId);
+    const filterName =
+      filters.find((f) => f.id === filterId)?.label || 'Unknown';
+    showToast(`Filtered by ${filterName}`, 'info', 2000);
+  }, []);
 
   // Filter posts based on active filter
-  const filteredPosts = posts.filter((post) => {
-    if (activeFilter === 'all') {
-      return true;
-    }
-    return post.category === activeFilter;
-  });
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      if (activeFilter === 'all') {
+        return true;
+      }
+      return post.category === activeFilter;
+    });
+  }, [activeFilter]);
+
+  const ListHeaderComponent = useCallback(
+    () => (
+      <>
+        {/* Stories Row */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+          nestedScrollEnabled={false}
+          contentContainerStyle={{
+            paddingHorizontal: 24,
+            paddingVertical: 16,
+            gap: 24,
+            height: 120,
+          }}
+        >
+          {storyStates.map((story) => (
+          <StoryItem
+            key={story.id}
+              story={story}
+              onPress={() => handleStoryPress(story.id)}
+          />
+        ))}
+      </ScrollView>
+
+      {/* Filter Chips */}
+        <View
+          style={{
+            height: 50,
+            justifyContent: 'center',
+            backgroundColor: 'white',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          <View style={[tw`px-6 flex-row items-center`, { gap: 8 }]}>
+        {filters.map((filter) => (
+              <Chip
+            key={filter.id}
+            label={filter.label}
+            icon={filter.icon}
+                active={activeFilter === filter.id}
+                onPress={() => handleFilterPress(filter.id)}
+                size="small"
+                iconPosition="left"
+          />
+        ))}
+          </View>
+        </View>
+      </>
+    ),
+    [storyStates, activeFilter, filters]
+  );
+
+  const renderPost = useCallback(
+    ({ item: post }) => (
+      <PostCard
+        post={{
+          ...post,
+          user: {
+            ...post.user,
+            location:
+              post.user.location === null ? undefined : post.user.location,
+            rating: post.user.rating === null ? undefined : post.user.rating,
+          },
+        }}
+        comment={comment}
+        onCommentChange={setComment}
+      />
+    ),
+    [comment]
+  );
 
   return (
     <View style={tw`flex-1 bg-white`}>
@@ -219,71 +314,32 @@ export default function FeedScreen() {
       {/* Header with Logo */}
       <Header />
 
-      {/* Stories Row */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingHorizontal: 24,
-          paddingVertical: 16,
-          gap: 24,
-          height: 160,
-        }}
-      >
-        {storyStates.map((story) => (
-          <StoryItem
-            key={story.id}
-            story={story}
-            onPress={() => handleStoryPress(story.id)}
-          />
-        ))}
-      </ScrollView>
-
-      {/* Filter Chips */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingHorizontal: 24,
-          paddingVertical: 5,
-          gap: 8,
-          height: 55,
-          width: '100%',
-        }}
-      >
-        {filters.map((filter) => (
-          <Chip
-            key={filter.id}
-            label={filter.label}
-            icon={filter.icon}
-            active={activeFilter === filter.id}
-            onPress={() => setActiveFilter(filter.id)}
-            size="small"
-            iconPosition="left"
-          />
-        ))}
-      </ScrollView>
+      {/* Toast */}
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        duration={toast.duration}
+        position={toast.position}
+        onHide={hideToast}
+      />
 
       {/* Feed Posts */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {filteredPosts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={{
-              ...post,
-              user: {
-                ...post.user,
-                location:
-                  post.user.location === null ? undefined : post.user.location,
-                rating:
-                  post.user.rating === null ? undefined : post.user.rating,
-              },
-            }}
-            comment={comment}
-            onCommentChange={setComment}
-          />
-        ))}
-      </ScrollView>
+      <FlatList
+        data={filteredPosts}
+        renderItem={renderPost}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={ListHeaderComponent}
+        showsVerticalScrollIndicator={false}
+        removeClippedSubviews={false}
+        initialNumToRender={10}
+        maxToRenderPerBatch={5}
+        windowSize={10}
+        maintainVisibleContentPosition={{
+          minIndexForVisible: 0,
+          autoscrollToTopThreshold: 10,
+        }}
+      />
     </View>
   );
 }

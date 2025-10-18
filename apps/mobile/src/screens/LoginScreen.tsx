@@ -73,7 +73,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
           <Text
             style={{
               fontFamily: 'Outfit-Medium',
-              fontWeight: '500',
+              fontWeight: '600',
               fontSize: 40,
               color: colors.black,
               marginBottom: 12,
@@ -97,7 +97,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
         </View>
 
         {/* Form */}
-        <View style={tw`gap-4 mb-6`}>
+        <View style={tw` mb-4`}>
           {/* Email */}
           <Input
             label="Email"

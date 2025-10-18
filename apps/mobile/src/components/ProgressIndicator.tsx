@@ -1,6 +1,10 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { COLORS } from '@thimblely/shared';
+
+// Import colors directly
+const colors = {
+  complimentary: '#A30552',
+};
 
 interface ProgressIndicatorProps {
   currentStep: number;
@@ -38,7 +42,7 @@ const styles = StyleSheet.create({
     borderRadius: 36, // Fully rounded from Figma
   },
   activeBar: {
-    backgroundColor: COLORS.complimentary, // #A30552 from Figma
+    backgroundColor: colors.complimentary, // #A30552 from Figma
   },
   inactiveBar: {
     backgroundColor: '#D9D9D9', // From Figma

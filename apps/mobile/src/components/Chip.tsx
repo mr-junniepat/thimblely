@@ -39,7 +39,7 @@ export default function Chip({
           minWidth: 50,
           iconSize: 12,
           gap: 4,
-          height: 30,
+          height: 32,
         };
       case 'medium':
         return {
@@ -69,6 +69,7 @@ export default function Chip({
           minWidth: 65,
           iconSize: 14,
           gap: 6,
+          height: 32,
         };
     }
   };
@@ -97,6 +98,7 @@ export default function Chip({
   return (
     <TouchableOpacity
       onPress={onPress}
+      activeOpacity={0.7}
       style={[
         tw`flex-row items-center justify-center rounded-full`,
         {

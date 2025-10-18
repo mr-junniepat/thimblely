@@ -14,6 +14,12 @@ interface HeaderProps {
   rightIcon?: LucideIcon;
   onRightIconPress?: () => void;
   showLogo?: boolean;
+  rightIcons?: Array<{
+    icon: LucideIcon;
+    onPress?: () => void;
+    size?: number;
+    color?: string;
+  }>;
 }
 
 export default function Header({
@@ -21,9 +27,10 @@ export default function Header({
   rightIcon: RightIcon,
   onRightIconPress,
   showLogo = true,
+  rightIcons,
 }: HeaderProps) {
   return (
-    <View style={tw`px-6 py-4 flex-row items-center justify-between`}>
+    <View style={tw`px-4 py-4 flex-row items-center justify-between`}>
       <View style={tw`flex-row items-center gap-2`}>
         {showLogo && (
           <View style={tw`w-8 h-8`}>
@@ -41,27 +48,54 @@ export default function Header({
             {title}
           </Text>
         )}
-        {!title && showLogo && (
+        {!title && (
           <Text style={{ fontSize: 14, fontWeight: '400', color: 'black' }}>
             Thimblely
           </Text>
         )}
       </View>
 
-      {RightIcon && (
-        <TouchableOpacity
-          onPress={onRightIconPress}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 16,
-            backgroundColor: colors.complimentary,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <RightIcon size={16} color="white" />
-        </TouchableOpacity>
+      {/* Support for multiple right icons */}
+      {rightIcons && rightIcons.length > 0 ? (
+        <View style={tw`flex-row items-center gap-4`}>
+          {rightIcons.map((iconConfig, index) => {
+            const IconComponent = iconConfig.icon;
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={iconConfig.onPress}
+                style={{
+                  width: 32,
+                  height: 32,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <IconComponent
+                  size={iconConfig.size || 24}
+                  color={iconConfig.color || colors.black}
+                />
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      ) : (
+        /* Single right icon with circular background */
+        RightIcon && (
+          <TouchableOpacity
+            onPress={onRightIconPress}
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: colors.complimentary,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <RightIcon size={16} color="white" />
+          </TouchableOpacity>
+        )
       )}
     </View>
   );

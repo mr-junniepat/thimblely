@@ -8,7 +8,7 @@ const colors = {
   black: '#111113',
 };
 import tw from 'twrnc';
-import { ArrowLeft, Calendar, Plus, Share } from 'lucide-react-native';
+import { ChevronLeft, Calendar, Plus, Share } from 'lucide-react-native';
 import { faker } from '@faker-js/faker';
 
 interface InfluencerDetailScreenProps {
@@ -51,7 +51,7 @@ export default function InfluencerDetailScreen() {
           onPress={() => navigation.goBack()}
           style={{ marginRight: 16 }}
         >
-          <ArrowLeft size={24} color={colors.black} />
+          <ChevronLeft size={24} color={colors.black} />
         </TouchableOpacity>
       </View>
 

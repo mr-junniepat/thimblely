@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
@@ -21,6 +21,16 @@ import MainTabs from './navigation/MainTabs';
 import ManufacturerDetailScreen from './screens/ManufacturerDetailScreen';
 import InfluencerDetailScreen from './screens/InfluencerDetailScreen';
 import CalendarScreen from './screens/workspaceSubModules/CalendarScreen';
+import ChangePasswordScreen from './screens/profile/ChangePasswordScreen';
+import WorkspaceSecurityScreen from './screens/profile/WorkspaceSecurityScreen';
+import ProfilePrivacyScreen from './screens/profile/ProfilePrivacyScreen';
+import NotificationSettingsScreen from './screens/profile/NotificationSettingsScreen';
+import ActivityScreen from './screens/profile/ActivityScreen';
+import HelpSupportScreen from './screens/profile/HelpSupportScreen';
+import MeasurementFormScreen from './screens/profile/MeasurementFormScreen';
+import NotificationsScreen from './screens/profile/NotificationsScreen';
+import ClientCrmScreen from './screens/workspaceSubModules/ClientCrmScreen';
+import ClientDetailScreen from './screens/workspaceSubModules/ClientDetailScreen';
 
 export type RootStackParamList = {
   Landing: undefined;
@@ -33,6 +43,15 @@ export type RootStackParamList = {
   ManufacturerDetail: { manufacturer: any };
   InfluencerDetail: { influencer: any };
   Calendar: undefined;
+  ChangePassword: undefined;
+  WorkspaceSecurity: undefined;
+  ProfilePrivacy: undefined;
+  NotificationSettings: undefined;
+  Activity: undefined;
+  HelpSupport: undefined;
+  MeasurementForm: { templateId: string };
+  ClientCrm: undefined;
+  ClientDetail: { clientId: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -84,6 +103,34 @@ export default function App() {
             component={InfluencerDetailScreen}
           />
           <Stack.Screen name="Calendar" component={CalendarScreen} />
+          <Stack.Screen
+            name="ChangePassword"
+            component={ChangePasswordScreen}
+          />
+          <Stack.Screen
+            name="WorkspaceSecurity"
+            component={WorkspaceSecurityScreen}
+          />
+          <Stack.Screen
+            name="ProfilePrivacy"
+            component={ProfilePrivacyScreen}
+          />
+          <Stack.Screen
+            name="NotificationsScreen"
+            component={NotificationsScreen}
+          />
+          <Stack.Screen
+            name="NotificationSettings"
+            component={NotificationSettingsScreen}
+          />
+          <Stack.Screen name="Activity" component={ActivityScreen} />
+          <Stack.Screen name="HelpSupport" component={HelpSupportScreen} />
+          <Stack.Screen
+            name="MeasurementForm"
+            component={MeasurementFormScreen}
+          />
+          <Stack.Screen name="ClientCrm" component={ClientCrmScreen} />
+          <Stack.Screen name="ClientDetail" component={ClientDetailScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

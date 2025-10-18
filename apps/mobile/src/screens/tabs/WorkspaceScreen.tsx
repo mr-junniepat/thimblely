@@ -197,8 +197,27 @@ export default function WorkspaceScreen() {
       case '1': // Calendar
         navigation.navigate('Calendar' as never);
         break;
+      case '2': // CRM
+        navigation.navigate('ClientCrm' as never);
+        break;
+      case '3': // Finance
+        // TODO: Create Finance screen
+        console.log('Finance module pressed');
+        break;
+      case '4': // Inventory
+        // TODO: Create Inventory screen
+        console.log('Inventory module pressed');
+        break;
+      case '5': // Orders
+        // TODO: Create Orders screen
+        console.log('Orders module pressed');
+        break;
+      case '6': // Team Management
+        // TODO: Create Team Management screen
+        console.log('Team Management module pressed');
+        break;
       default:
-        // Handle other modules as needed
+        console.log('Unknown module pressed:', moduleId);
         break;
     }
   };

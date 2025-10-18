@@ -4,5 +4,10 @@
     "strict": true,
     "jsx": "react-native"
   },
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "references": [
+    {
+      "path": "../../libs/shared"
+    }
+  ]
 }

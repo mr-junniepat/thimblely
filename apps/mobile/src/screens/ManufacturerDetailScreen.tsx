@@ -11,7 +11,7 @@ const colors = {
   categoryBgColor: 'rgba(170,237,59,0.09)',
 };
 import tw from 'twrnc';
-import { ArrowLeft, Star, MapPin } from 'lucide-react-native';
+import { ChevronLeft, Star, MapPin } from 'lucide-react-native';
 import { faker } from '@faker-js/faker';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -69,7 +69,7 @@ export default function ManufacturerDetailScreen() {
           onPress={() => navigation.goBack()}
           style={{ marginRight: 16 }}
         >
-          <ArrowLeft size={24} color={colors.black} />
+          <ChevronLeft size={24} color={colors.black} />
         </TouchableOpacity>
       </View>
 

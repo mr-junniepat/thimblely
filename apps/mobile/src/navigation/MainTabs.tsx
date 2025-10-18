@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { colors } from '@thimblely/shared';
 import tw from 'twrnc';
 import {
   Home,
@@ -8,6 +7,12 @@ import {
   Briefcase,
   User,
 } from 'lucide-react-native';
+
+// Import colors directly
+const colors = {
+  complimentary: '#A30552',
+  greyText: '#68666F',
+};
 
 // Screens - using new Figma-designed screens
 import FeedScreen from '../screens/tabs/FeedScreen';
@@ -22,7 +27,7 @@ export type MainTabsParamList = {
   Profile: undefined;
 };
 
-export default function MainTabs() {
+export default function MainTabs({ navigation }: any) {
   const [activeTab, setActiveTab] = useState('Feed');
 
   const renderScreen = () => {
@@ -34,7 +39,7 @@ export default function MainTabs() {
       case 'Workspace':
         return <WorkspaceScreen />;
       case 'Profile':
-        return <ProfileScreen />;
+        return <ProfileScreen navigation={navigation} />;
       default:
         return <FeedScreen />;
     }
