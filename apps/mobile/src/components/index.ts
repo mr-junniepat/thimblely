@@ -31,3 +31,4 @@ export { default as CreateOrderModal } from './CreateOrderModal';
 export { default as OrderSuccessScreen } from './OrderSuccessScreen';
 export { default as ProgressBar } from './ProgressBar';
 export { default as StatCard } from './StatCard';
+export { default as WorkspaceStatCard } from './WorkspaceStatCard';

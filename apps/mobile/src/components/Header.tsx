@@ -30,7 +30,7 @@ export default function Header({
   rightIcons,
 }: HeaderProps) {
   return (
-    <View style={tw`px-4 py-4 flex-row items-center justify-between`}>
+    <View style={tw`px-8 py-4 flex-row items-center justify-between`}>
       <View style={tw`flex-row items-center gap-2`}>
         {showLogo && (
           <View style={tw`w-8 h-8`}>

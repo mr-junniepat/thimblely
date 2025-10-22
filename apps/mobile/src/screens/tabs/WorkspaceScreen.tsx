@@ -9,21 +9,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
-import { ModuleCard } from '../../components';
-import {
-  Calendar,
-  Settings,
-  Package,
-  ShoppingCart,
-  DollarSign,
-  Headphones,
-  Mic,
-  BarChart,
-  CheckCircle,
-  Briefcase,
-  Users2,
-  Zap,
-} from 'lucide-react-native';
+import { ModuleCard, WorkspaceStatCard, Header } from '../../components';
+import { Settings, Mic, BarChart, CheckCircle, Zap } from 'lucide-react-native';
 
 // Import colors directly
 const colors = {
@@ -48,7 +35,7 @@ const workspaceModules = [
     id: '1',
     title: 'Calendar',
     description: 'Schedule meetings, events and deadlines',
-    icon: Calendar,
+    iconSource: require('../../../../../libs/shared/src/images/calendar.png'),
     iconBg: 'rgba(207,27,43,0.09)',
     iconColor: '#CF1B2B',
     status: '3 events today',
@@ -58,7 +45,7 @@ const workspaceModules = [
     id: '2',
     title: 'CRM',
     description: 'Manage client and customer relationship',
-    icon: Headphones,
+    iconSource: require('../../../../../libs/shared/src/images/customer-support.png'),
     iconBg: 'rgba(26,115,232,0.09)',
     iconColor: '#1A73E8',
     status: '2 active clients',
@@ -68,7 +55,7 @@ const workspaceModules = [
     id: '3',
     title: 'Finance',
     description: 'Track expenses, revenue and financial reports',
-    icon: DollarSign,
+    iconSource: require('../../../../../libs/shared/src/images/money-exchange.png'),
     iconBg: 'rgba(52,199,89,0.09)',
     iconColor: '#34C759',
     status: '$0.0k this month',
@@ -78,7 +65,7 @@ const workspaceModules = [
     id: '4',
     title: 'Inventory',
     description: 'Manage stock levels and product catalog',
-    icon: Package,
+    iconSource: require('../../../../../libs/shared/src/images/package.png'),
     iconBg: 'rgba(53,77,12,0.09)',
     iconColor: '#354D0C',
     status: '256 items in stock',
@@ -88,7 +75,7 @@ const workspaceModules = [
     id: '5',
     title: 'Orders',
     description: 'Track and manage customers orders',
-    icon: ShoppingCart,
+    iconSource: require('../../../../../libs/shared/src/images/shopping-cart-check.png'),
     iconBg: 'rgba(50,12,104,0.09)',
     iconColor: '#320C68',
     status: '0 pending orders',
@@ -98,7 +85,7 @@ const workspaceModules = [
     id: '6',
     title: 'Team Management',
     description: 'Manage team members & roles',
-    icon: Users2,
+    iconSource: require('../../../../../libs/shared/src/images/user-multiple-color-com.png'),
     iconBg: 'rgba(126,59,237,0.09)',
     iconColor: '#7E3BED',
     status: '2 team members',
@@ -144,14 +131,14 @@ const communicationItems = [
     id: '1',
     title: 'WhatsApp Business',
     description: 'Connect to receive orders via WhatsApp',
-    image: 'https://via.placeholder.com/50x50/25D366/FFFFFF?text=WA',
+    image: require('../../../../../libs/shared/src/images/whatsapp.png'),
     action: 'Setup',
   },
   {
     id: '2',
     title: 'Telegram Bot',
     description: 'Setup bot for automated customer service',
-    image: 'https://via.placeholder.com/50x50/0088CC/FFFFFF?text=TG',
+    image: require('../../../../../libs/shared/src/images/telegram.png'),
     action: 'Setup',
   },
 ];
@@ -162,15 +149,15 @@ const recentActivity = [
     id: '1',
     title: 'New Client Added',
     description: 'Emma Thompson joined',
-    icon: Users2,
+    iconSource: require('../../../../../libs/shared/src/images/user-multiple-color-com.png'),
     time: '42 days ago',
     timeColor: '#34C759',
   },
   {
     id: '2',
-    title: 'Telegram Bot',
+    title: 'Team Member Added',
     description: 'Michael John joined',
-    icon: Users2,
+    iconSource: require('../../../../../libs/shared/src/images/user-multiple-color-com.png'),
     time: '45 days ago',
     timeColor: '#34C759',
   },
@@ -223,6 +210,8 @@ export default function WorkspaceScreen() {
     <View style={tw`flex-1 bg-white`}>
       {/* Status Bar Space */}
       <View style={tw`h-12`} />
+
+      <Header />
 
       {/* Header */}
       <View style={tw`px-6 py-4 flex-row items-center justify-between`}>
@@ -349,110 +338,22 @@ export default function WorkspaceScreen() {
             Workspace Overview
           </Text>
           <View style={tw`flex-row gap-3`}>
-            <View
-              style={[
-                tw`flex-1 bg-white p-4 rounded-lg flex-row items-center gap-4`,
-                {
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 10,
-                  elevation: 4,
-                },
-              ]}
-            >
-              <Briefcase size={24} color={colors.greyText} />
-              <View style={tw`flex-1`}>
-                <Text
-                  style={[
-                    tw`text-xs font-normal mb-1`,
-                    {
-                      color: colors.greyText,
-                      fontFamily: 'Satoshi Variable',
-                    },
-                  ]}
-                >
-                  Active Projects
-                </Text>
-                <View style={tw`flex-row items-end gap-1`}>
-                  <Text
-                    style={[
-                      tw`text-base font-bold`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                        letterSpacing: -0.64,
-                      },
-                    ]}
-                  >
-                    0
-                  </Text>
-                  <Text
-                    style={[
-                      tw`text-xs font-normal`,
-                      {
-                        color: colors.blue,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    +0%
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View
-              style={[
-                tw`flex-1 bg-white p-4 rounded-lg flex-row items-center gap-4`,
-                {
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 10,
-                  elevation: 4,
-                },
-              ]}
-            >
-              <Users2 size={24} color={colors.greyText} />
-              <View style={tw`flex-1`}>
-                <Text
-                  style={[
-                    tw`text-xs font-normal mb-1`,
-                    {
-                      color: colors.greyText,
-                      fontFamily: 'Satoshi Variable',
-                    },
-                  ]}
-                >
-                  Team Members
-                </Text>
-                <View style={tw`flex-row items-end gap-1`}>
-                  <Text
-                    style={[
-                      tw`text-base font-bold`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                        letterSpacing: -0.64,
-                      },
-                    ]}
-                  >
-                    0
-                  </Text>
-                  <Text
-                    style={[
-                      tw`text-xs font-normal`,
-                      {
-                        color: colors.blue,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    +0
-                  </Text>
-                </View>
-              </View>
-            </View>
+            <WorkspaceStatCard
+              iconSource={require('../../../../../libs/shared/src/images/briefcase.png')}
+              iconColor={colors.complimentary}
+              label="Active Projects"
+              value="0"
+              change="+0%"
+              changeColor={colors.blue}
+            />
+            <WorkspaceStatCard
+              iconSource={require('../../../../../libs/shared/src/images/user-multiple-color-com.png')}
+              iconColor={colors.complimentary}
+              label="Team Members"
+              value="0"
+              change="+0"
+              changeColor={colors.blue}
+            />
           </View>
         </View>
 
@@ -478,7 +379,7 @@ export default function WorkspaceScreen() {
                   key={module.id}
                   title={module.title}
                   description={module.description}
-                  icon={module.icon}
+                  iconSource={module.iconSource}
                   iconBg={module.iconBg}
                   iconColor={module.iconColor}
                   status={module.status}
@@ -494,7 +395,7 @@ export default function WorkspaceScreen() {
                   key={module.id}
                   title={module.title}
                   description={module.description}
-                  icon={module.icon}
+                  iconSource={module.iconSource}
                   iconBg={module.iconBg}
                   iconColor={module.iconColor}
                   status={module.status}
@@ -510,7 +411,7 @@ export default function WorkspaceScreen() {
                   key={module.id}
                   title={module.title}
                   description={module.description}
-                  icon={module.icon}
+                  iconSource={module.iconSource}
                   iconBg={module.iconBg}
                   iconColor={module.iconColor}
                   status={module.status}
@@ -628,7 +529,7 @@ export default function WorkspaceScreen() {
               >
                 <View style={tw`flex-row items-center gap-4 flex-1`}>
                   <Image
-                    source={{ uri: item.image }}
+                    source={item.image}
                     style={tw`w-12 h-12 rounded-full`}
                     resizeMode="cover"
                   />
@@ -732,7 +633,11 @@ export default function WorkspaceScreen() {
                       },
                     ]}
                   >
-                    <activity.icon size={32} color={colors.greyText} />
+                    <Image
+                      source={activity.iconSource}
+                      style={[tw`w-8 h-8`, { tintColor: colors.blue }]}
+                      resizeMode="contain"
+                    />
                   </View>
                   <View style={tw`flex-1`}>
                     <Text

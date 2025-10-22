@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import tw from 'twrnc';
 import { LucideIcon } from 'lucide-react-native';
 
 interface ModuleCardProps {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
+  iconSource?: any;
   iconBg: string;
   iconColor: string;
   status: string;
@@ -18,6 +19,7 @@ export default function ModuleCard({
   title,
   description,
   icon: Icon,
+  iconSource,
   iconBg,
   iconColor,
   status,
@@ -43,7 +45,15 @@ export default function ModuleCard({
             },
           ]}
         >
-          <Icon size={32} color={iconColor} />
+          {iconSource ? (
+            <Image
+              source={iconSource}
+              style={[tw`w-8 h-8`, { tintColor: iconColor }]}
+              resizeMode="contain"
+            />
+          ) : Icon ? (
+            <Icon size={32} color={iconColor} />
+          ) : null}
         </View>
         <Text
           style={[
