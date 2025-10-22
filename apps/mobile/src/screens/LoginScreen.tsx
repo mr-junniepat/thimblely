@@ -157,8 +157,11 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             </View>
             <Text
               style={[
-                tw`text-xs text-[${colors.black}]`,
-                { fontFamily: 'Outfit-Regular' },
+                tw`text-xs`,
+                {
+                  fontFamily: 'Outfit-Regular',
+                  color: colors.black,
+                },
               ]}
             >
               Remember me
@@ -169,8 +172,11 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
           <TouchableOpacity onPress={handleForgotPassword}>
             <Text
               style={[
-                tw`text-xs text-[${colors.purple}]`,
-                { fontFamily: 'Outfit-Regular' },
+                tw`text-xs`,
+                {
+                  fontFamily: 'Outfit-Regular',
+                  color: colors.purple,
+                },
               ]}
             >
               Forgot Password?
@@ -191,8 +197,11 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
           <View style={tw`flex-1 h-px bg-gray-300`} />
           <Text
             style={[
-              tw`mx-3 text-sm text-[${colors.black}]`,
-              { fontFamily: 'Outfit-Regular' },
+              tw`mx-3 text-sm`,
+              {
+                fontFamily: 'Outfit-Regular',
+                color: colors.black,
+              },
             ]}
           >
             Or

@@ -15,6 +15,7 @@ import {
   FloatingButton,
   Toast,
   useToast,
+  ProgressBar,
 } from '../../components';
 import AddInventoryItemModal from '../../components/AddInventoryItemModal';
 
@@ -236,37 +237,18 @@ export default function InventoryScreen() {
 
         {/* Stock Information */}
         <View style={tw`mb-3`}>
-          <Text
-            style={[
-              tw`text-sm mb-2`,
-              {
-                color: colors.black,
-                fontFamily: 'Satoshi Variable',
-              },
-            ]}
-          >
-            Stock : {item.currentStock}/{item.maxStockLevel}
-          </Text>
-
-          {/* Progress Bar */}
-          <View
-            style={[
-              tw`h-1 rounded-full`,
-              {
-                backgroundColor: '#D9D9D9',
-              },
-            ]}
-          >
-            <View
-              style={[
-                tw`h-1 rounded-full`,
-                {
-                  width: `${stockPercentage}%`,
-                  backgroundColor: colors.complimentary,
-                },
-              ]}
-            />
-          </View>
+          <ProgressBar
+            progress={stockPercentage}
+            total={item.maxStockLevel}
+            current={item.currentStock}
+            label={`Stock : ${item.currentStock}/${item.maxStockLevel}`}
+            color={colors.complimentary}
+            backgroundColor="#D9D9D9"
+            height={4}
+            textColor={colors.black}
+            percentageColor={colors.black}
+            showPercentage={false}
+          />
         </View>
 
         {/* Price */}

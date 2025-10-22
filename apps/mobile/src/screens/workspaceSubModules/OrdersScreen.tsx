@@ -25,6 +25,7 @@ import {
   Toast,
   useToast,
   CreateOrderModal,
+  StatCard,
 } from '../../components';
 
 // Import colors directly
@@ -328,32 +329,6 @@ export default function OrdersScreen() {
             </Text>
           </View>
         </View>
-
-        {/* Status Badge (if completed) */}
-        {item.status === 'completed' && (
-          <View style={tw`mt-3`}>
-            <View
-              style={[
-                tw`px-3 py-1 rounded-full self-start`,
-                {
-                  backgroundColor: `${statusColor}20`,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  tw`text-xs`,
-                  {
-                    color: statusColor,
-                    fontFamily: 'Satoshi Variable',
-                  },
-                ]}
-              >
-                {statusLabel}
-              </Text>
-            </View>
-          </View>
-        )}
       </TouchableOpacity>
     );
   };
@@ -392,190 +367,50 @@ export default function OrdersScreen() {
             {/* First Row - Total Orders and Pending Orders */}
             <View style={tw`flex-row gap-2 mb-2`}>
               {/* Total Orders */}
-              <View
-                style={[
-                  tw`flex-1 p-2 rounded-lg flex-row items-center gap-4`,
-                  {
-                    backgroundColor: colors.white,
-                  },
-                ]}
-              >
-                <View
-                  style={[
-                    tw`w-10 h-10 rounded-full items-center justify-center`,
-                    {
-                      backgroundColor: `${colors.blue}20`,
-                    },
-                  ]}
-                >
-                  <ShoppingCart size={16} color={colors.blue} />
-                </View>
-                <View style={tw`flex-1`}>
-                  <Text
-                    style={[
-                      tw`text-base font-bold`,
-                      {
-                        color: colors.blue,
-                        fontFamily: 'Satoshi Variable',
-                        letterSpacing: -0.64,
-                      },
-                    ]}
-                  >
-                    {orderStats.totalOrders}
-                  </Text>
-                  <Text
-                    style={[
-                      tw`text-xs`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    Total Orders
-                  </Text>
-                </View>
+              <View style={tw`flex-1`}>
+                <StatCard
+                  icon={ShoppingCart}
+                  value={orderStats.totalOrders}
+                  label="Total Orders"
+                  color={colors.blue}
+                  backgroundColor={colors.backgroundWhite}
+                />
               </View>
 
               {/* Pending Orders */}
-              <View
-                style={[
-                  tw`flex-1 p-2 rounded-lg flex-row items-center gap-4`,
-                  {
-                    backgroundColor: colors.white,
-                  },
-                ]}
-              >
-                <View
-                  style={[
-                    tw`w-10 h-10 rounded-full items-center justify-center`,
-                    {
-                      backgroundColor: `${colors.yellow}20`,
-                    },
-                  ]}
-                >
-                  <Package size={16} color={colors.yellow} />
-                </View>
-                <View style={tw`flex-1`}>
-                  <Text
-                    style={[
-                      tw`text-base font-bold`,
-                      {
-                        color: colors.yellow,
-                        fontFamily: 'Satoshi Variable',
-                        letterSpacing: -0.64,
-                      },
-                    ]}
-                  >
-                    {orderStats.pendingOrders}
-                  </Text>
-                  <Text
-                    style={[
-                      tw`text-xs`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    Pending Orders
-                  </Text>
-                </View>
+              <View style={tw`flex-1`}>
+                <StatCard
+                  icon={Package}
+                  value={orderStats.pendingOrders}
+                  label="Pending Orders"
+                  color={colors.yellow}
+                  backgroundColor={colors.backgroundWhite}
+                />
               </View>
             </View>
 
             {/* Second Row - In Progress and Completed Orders */}
             <View style={tw`flex-row gap-2`}>
               {/* In Progress Orders */}
-              <View
-                style={[
-                  tw`flex-1 p-2 rounded-lg flex-row items-center gap-4`,
-                  {
-                    backgroundColor: colors.white,
-                  },
-                ]}
-              >
-                <View
-                  style={[
-                    tw`w-10 h-10 rounded-full items-center justify-center`,
-                    {
-                      backgroundColor: `${colors.purple}20`,
-                    },
-                  ]}
-                >
-                  <Truck size={16} color={colors.purple} />
-                </View>
-                <View style={tw`flex-1`}>
-                  <Text
-                    style={[
-                      tw`text-base font-bold`,
-                      {
-                        color: colors.purple,
-                        fontFamily: 'Satoshi Variable',
-                        letterSpacing: -0.64,
-                      },
-                    ]}
-                  >
-                    {orderStats.inProgressOrders}
-                  </Text>
-                  <Text
-                    style={[
-                      tw`text-xs`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    In Progress
-                  </Text>
-                </View>
+              <View style={tw`flex-1`}>
+                <StatCard
+                  icon={Truck}
+                  value={orderStats.inProgressOrders}
+                  label="In Progress"
+                  color={colors.purple}
+                  backgroundColor={colors.white}
+                />
               </View>
 
               {/* Completed Orders */}
-              <View
-                style={[
-                  tw`flex-1 p-2 rounded-lg flex-row items-center gap-4`,
-                  {
-                    backgroundColor: colors.white,
-                  },
-                ]}
-              >
-                <View
-                  style={[
-                    tw`w-10 h-10 rounded-full items-center justify-center`,
-                    {
-                      backgroundColor: `${colors.green}20`,
-                    },
-                  ]}
-                >
-                  <CheckCircle size={16} color={colors.green} />
-                </View>
-                <View style={tw`flex-1`}>
-                  <Text
-                    style={[
-                      tw`text-base font-bold`,
-                      {
-                        color: colors.green,
-                        fontFamily: 'Satoshi Variable',
-                        letterSpacing: -0.64,
-                      },
-                    ]}
-                  >
-                    {orderStats.completedOrders}
-                  </Text>
-                  <Text
-                    style={[
-                      tw`text-xs`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    Completed Orders
-                  </Text>
-                </View>
+              <View style={tw`flex-1`}>
+                <StatCard
+                  icon={CheckCircle}
+                  value={orderStats.completedOrders}
+                  label="Completed Orders"
+                  color={colors.green}
+                  backgroundColor={colors.white}
+                />
               </View>
             </View>
           </View>

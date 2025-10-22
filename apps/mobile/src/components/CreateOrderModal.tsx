@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  ScrollView,
-  Image,
-} from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import tw from 'twrnc';
-import { X, Search, Plus, ChevronDown, Package } from 'lucide-react-native';
-import { SearchBar, Input } from '../components';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Plus, ChevronDown, Package } from 'lucide-react-native';
+import { faker } from '@faker-js/faker';
+import { SearchBar, Input, BaseModal } from '../components';
 import OrderSuccessScreen from './OrderSuccessScreen';
 
 // Import colors directly
@@ -53,27 +48,43 @@ interface CreateOrderModalProps {
 const mockCustomers: Customer[] = [
   {
     id: '1',
-    name: 'Sola David',
-    avatar: 'https://via.placeholder.com/50x50/4A90E2/FFFFFF?text=SD',
-    previousOrders: 23,
-    email: 'soladavid@gmail.com',
-    phone: '+234 8012345678',
+    name: faker.person.fullName(),
+    avatar: faker.image.avatar(),
+    previousOrders: faker.number.int({ min: 1, max: 50 }),
+    email: faker.internet.email(),
+    phone: faker.phone.number(),
   },
   {
     id: '2',
-    name: 'Jessica Lee',
-    avatar: 'https://via.placeholder.com/50x50/34C759/FFFFFF?text=JL',
-    previousOrders: 15,
-    email: 'jessicalee@gmail.com',
-    phone: '+234 8023456789',
+    name: faker.person.fullName(),
+    avatar: faker.image.avatar(),
+    previousOrders: faker.number.int({ min: 1, max: 50 }),
+    email: faker.internet.email(),
+    phone: faker.phone.number(),
   },
   {
     id: '3',
-    name: 'Mohammed Khan',
-    avatar: 'https://via.placeholder.com/50x50/FBBC04/FFFFFF?text=MK',
-    previousOrders: 30,
-    email: 'mohammedkhan@gmail.com',
-    phone: '+234 8034567890',
+    name: faker.person.fullName(),
+    avatar: faker.image.avatar(),
+    previousOrders: faker.number.int({ min: 1, max: 50 }),
+    email: faker.internet.email(),
+    phone: faker.phone.number(),
+  },
+  {
+    id: '4',
+    name: faker.person.fullName(),
+    avatar: faker.image.avatar(),
+    previousOrders: faker.number.int({ min: 1, max: 50 }),
+    email: faker.internet.email(),
+    phone: faker.phone.number(),
+  },
+  {
+    id: '5',
+    name: faker.person.fullName(),
+    avatar: faker.image.avatar(),
+    previousOrders: faker.number.int({ min: 1, max: 50 }),
+    email: faker.internet.email(),
+    phone: faker.phone.number(),
   },
 ];
 
@@ -197,9 +208,16 @@ export default function CreateOrderModal({
       step: currentStep,
     };
 
-    // Store completed order data and show success screen
+    // Store completed order data
     setCompletedOrderData(orderData);
-    setShowSuccessScreen(true);
+
+    // Dismiss the modal first
+    onClose();
+
+    // Show success screen after a brief delay
+    setTimeout(() => {
+      setShowSuccessScreen(true);
+    }, 300);
 
     // Call the parent callback
     onComplete(orderData);
@@ -242,9 +260,12 @@ export default function CreateOrderModal({
             {index < 3 && (
               <View
                 style={[
-                  tw`h-px w-16 absolute top-4 left-8`,
+                  tw`h-px w-20 absolute top-4 left-8`,
                   {
                     backgroundColor: `${colors.complimentary}30`,
+                    borderStyle: 'dashed',
+                    borderWidth: 1,
+                    borderColor: `${colors.complimentary}30`,
                   },
                 ]}
               />
@@ -257,22 +278,34 @@ export default function CreateOrderModal({
 
   const renderStep1 = () => {
     return (
-      <View style={tw`flex-1 px-6`}>
+      <View style={tw`flex-1 px-2`}>
         {/* Header with overlapping avatars */}
-        <View
+        <LinearGradient
+          colors={['#682476', '#290431']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
           style={[
-            tw`p-4 rounded-lg mb-6`,
-            {
-              backgroundColor: colors.complimentary,
-            },
+            tw`flex-row items-center justify-between p-4 rounded-lg mb-6`,
           ]}
         >
+          <Text
+            style={[
+              tw`text-sm font-bold w-2/5`,
+              {
+                color: colors.white,
+                fontFamily: 'Satoshi Variable',
+              },
+            ]}
+          >
+            Add customers from existing client list
+          </Text>
+
           <View style={tw`flex-row items-center justify-center mb-2`}>
             {mockCustomers.slice(0, 3).map((customer, index) => (
               <View
                 key={customer.id}
                 style={[
-                  tw`w-8 h-8 rounded-full border-2 border-white`,
+                  tw`w-10 h-10 rounded-full border-2 border-white`,
                   {
                     marginLeft: index > 0 ? -10 : 0,
                     zIndex: 3 - index,
@@ -286,18 +319,7 @@ export default function CreateOrderModal({
               </View>
             ))}
           </View>
-          <Text
-            style={[
-              tw`text-sm font-bold text-center`,
-              {
-                color: colors.white,
-                fontFamily: 'Satoshi Variable',
-              },
-            ]}
-          >
-            Add customers from existing client list
-          </Text>
-        </View>
+        </LinearGradient>
 
         {/* Search Bar */}
         <View style={tw`mb-6`}>
@@ -310,24 +332,14 @@ export default function CreateOrderModal({
 
         {/* Customer List */}
         <ScrollView
-          style={tw`flex-1 mb-6`}
+          style={tw`flex-1 mb-6 px-1`}
           showsVerticalScrollIndicator={false}
         >
           {filteredCustomers.map((customer) => (
             <TouchableOpacity
               key={customer.id}
               onPress={() => handleCustomerSelect(customer)}
-              style={[
-                tw`p-4 rounded-lg mb-4`,
-                {
-                  backgroundColor: colors.white,
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 10,
-                  elevation: 4,
-                },
-              ]}
+              style={[tw`p-4 rounded-lg mb-4 shadow-md bg-white`]}
             >
               <View style={tw`flex-row items-center gap-4`}>
                 <Image
@@ -392,7 +404,7 @@ export default function CreateOrderModal({
 
   const renderStep2 = () => {
     return (
-      <View style={tw`flex-1 px-6`}>
+      <View style={tw`flex-1 px-2`}>
         {/* Step Title */}
         <Text
           style={[
@@ -532,7 +544,7 @@ export default function CreateOrderModal({
 
   const renderStep3 = () => {
     return (
-      <View style={tw`flex-1 px-6`}>
+      <View style={tw`flex-1 px-2`}>
         {/* Step Title */}
         <Text
           style={[
@@ -740,7 +752,7 @@ export default function CreateOrderModal({
 
   const renderStep4 = () => {
     return (
-      <View style={tw`flex-1 px-6`}>
+      <View style={tw`flex-1 px-2`}>
         {/* Step Title */}
         <Text
           style={[
@@ -983,7 +995,7 @@ export default function CreateOrderModal({
           </Text>
 
           {/* Deposit Amount */}
-          <View style={tw`mb-4`}>
+          <View style={tw`mb-3`}>
             <Text
               style={[
                 tw`text-sm font-medium mb-2`,
@@ -1047,100 +1059,48 @@ export default function CreateOrderModal({
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      presentationStyle="overFullScreen"
-      transparent={true}
-    >
-      <View style={tw`flex-1 bg-black bg-opacity-30`}>
-        <View
-          style={[
-            tw`flex-1 bg-white rounded-t-lg mt-20`,
-            {
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-            },
-          ]}
-        >
-          {/* Header */}
-          <View
-            style={tw`flex-row items-center justify-between p-6 border-b border-gray-200`}
+    <>
+      <BaseModal
+        visible={visible}
+        onClose={onClose}
+        onBack={currentStep === 1 ? onClose : handlePrevious}
+        title="Create Order"
+        height="100%"
+        animationType="slide"
+        overlayColor="rgba(0,0,0,0.3)"
+        showBackButton={true}
+      >
+        {/* Step Indicator */}
+        <View style={tw`py-6`}>{renderStepIndicator()}</View>
+
+        {/* Step Content */}
+        <View style={tw`flex-1`}>{renderCurrentStep()}</View>
+
+        {/* Next Button */}
+        <View style={tw`p-2 pt-4`}>
+          <TouchableOpacity
+            onPress={currentStep === 4 ? handleComplete : handleNext}
+            style={[
+              tw`w-full py-4 rounded-full items-center`,
+              {
+                backgroundColor: colors.complimentary,
+              },
+            ]}
           >
-            <TouchableOpacity onPress={onClose}>
-              <X size={24} color={colors.black} />
-            </TouchableOpacity>
             <Text
               style={[
-                tw`text-base font-bold`,
+                tw`text-sm font-medium`,
                 {
-                  color: colors.black,
+                  color: colors.white,
                   fontFamily: 'Satoshi Variable',
-                  letterSpacing: -0.64,
                 },
               ]}
             >
-              Create Order
+              {currentStep === 4 ? 'Complete' : 'Next'}
             </Text>
-            <View style={tw`w-6`} />
-          </View>
-
-          {/* Step Indicator */}
-          <View style={tw`py-6`}>{renderStepIndicator()}</View>
-
-          {/* Step Content */}
-          <View style={tw`flex-1`}>{renderCurrentStep()}</View>
-
-          {/* Navigation Buttons */}
-          <View
-            style={tw`flex-row justify-between p-6 border-t border-gray-200`}
-          >
-            <TouchableOpacity
-              onPress={currentStep === 1 ? onClose : handlePrevious}
-              style={[
-                tw`px-6 py-3 rounded-full`,
-                {
-                  backgroundColor: colors.lightGrey,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  tw`text-sm`,
-                  {
-                    color: colors.black,
-                    fontFamily: 'Satoshi Variable',
-                  },
-                ]}
-              >
-                {currentStep === 1 ? 'Cancel' : 'Previous'}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={currentStep === 4 ? handleComplete : handleNext}
-              style={[
-                tw`px-6 py-3 rounded-full`,
-                {
-                  backgroundColor: colors.complimentary,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  tw`text-sm font-medium`,
-                  {
-                    color: colors.white,
-                    fontFamily: 'Satoshi Variable',
-                  },
-                ]}
-              >
-                {currentStep === 4 ? 'Complete' : 'Next'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </View>
-      </View>
+      </BaseModal>
 
       {/* Success Screen */}
       <OrderSuccessScreen
@@ -1148,6 +1108,6 @@ export default function CreateOrderModal({
         onClose={handleSuccessScreenClose}
         orderData={completedOrderData}
       />
-    </Modal>
+    </>
   );
 }

@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
-import { ArrowLeft, Trash2, Plus } from 'lucide-react-native';
+import { ChevronLeft, Trash2, Plus } from 'lucide-react-native';
+import { ProgressBar } from '../../components';
 
 // Import colors directly
 const colors = {
@@ -19,7 +20,6 @@ interface OrderDetailScreenProps {}
 
 export default function OrderDetailScreen({}: OrderDetailScreenProps) {
   const navigation = useNavigation();
-  const route = useRoute();
 
   // Mock order data - in real app, this would come from route params or API
   const orderData = {
@@ -75,7 +75,7 @@ export default function OrderDetailScreen({}: OrderDetailScreenProps) {
       <View style={tw`px-6 py-6`}>
         <View style={tw`flex-row items-center justify-between`}>
           <TouchableOpacity onPress={handleBack}>
-            <ArrowLeft size={24} color={colors.black} />
+            <ChevronLeft size={24} color={colors.black} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -402,80 +402,22 @@ export default function OrderDetailScreen({}: OrderDetailScreenProps) {
               },
             ]}
           >
-            <Text
-              style={[
-                tw`text-sm mb-4`,
-                {
-                  color: colors.black,
-                  fontFamily: 'Satoshi Variable',
-                },
-              ]}
-            >
-              Amount Paid
-            </Text>
-
-            {/* Progress Bar */}
-            <View
-              style={[
-                tw`h-2 rounded-full mb-4`,
-                {
-                  backgroundColor: '#D9D9D9',
-                },
-              ]}
-            >
-              <View
-                style={[
-                  tw`h-2 rounded-full`,
-                  {
-                    backgroundColor: colors.purple,
-                    width: `${orderData.payment.percentage}%`,
-                  },
-                ]}
-              />
-            </View>
-
-            {/* Payment Info */}
-            <View style={tw`flex-row justify-between items-center mb-4`}>
-              <Text
-                style={[
-                  tw`text-sm`,
-                  {
-                    color: colors.black,
-                    fontFamily: 'Satoshi Variable',
-                  },
-                ]}
-              >
-                ${orderData.payment.paid.toLocaleString()} paid of{' '}
-                <Text
-                  style={[
-                    tw`font-bold`,
-                    {
-                      color: colors.purple,
-                      fontFamily: 'Satoshi Variable',
-                    },
-                  ]}
-                >
-                  ${orderData.payment.total.toLocaleString()}
-                </Text>
-              </Text>
-              <Text
-                style={[
-                  tw`text-xs`,
-                  {
-                    color: colors.black,
-                    fontFamily: 'Satoshi Variable',
-                  },
-                ]}
-              >
-                {orderData.payment.percentage}%
-              </Text>
-            </View>
+            <ProgressBar
+              progress={orderData.payment.percentage}
+              total={orderData.payment.total}
+              current={orderData.payment.paid}
+              label="Amount Paid"
+              color={colors.purple}
+              backgroundColor="#D9D9D9"
+              textColor={colors.black}
+              percentageColor={colors.black}
+            />
 
             {/* Add Payment Button */}
             <TouchableOpacity
               onPress={handleAddPayment}
               style={[
-                tw`flex-row items-center justify-center p-3 rounded-full`,
+                tw`flex-row items-center justify-center p-3 rounded-full mt-4`,
                 {
                   backgroundColor: colors.white,
                 },

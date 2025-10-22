@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, Animated, Dimensions } from 'react-native';
+import { View, Text, Image, Animated } from 'react-native';
 import tw from 'twrnc';
-import { Package } from 'lucide-react-native';
 
 // Import colors directly
 const colors = {
@@ -11,8 +10,6 @@ const colors = {
   white: '#FFFFFF',
   lightGrey: '#F5F5F7',
 };
-
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 interface OrderSuccessScreenProps {
   visible: boolean;
@@ -84,11 +81,11 @@ export default function OrderSuccessScreen({
       {/* Confetti Animation */}
       <Animated.View
         style={[
-          tw`absolute`,
+          tw`absolute inset-0`,
           {
             opacity: confettiAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: [0, 0.2],
+              outputRange: [0, 1],
             }),
             transform: [
               {
@@ -101,32 +98,11 @@ export default function OrderSuccessScreen({
           },
         ]}
       >
-        {/* Confetti positioned around the screen */}
-        <View style={tw`absolute -left-20 top-8 w-80 h-52 opacity-20`}>
-          <View
-            style={tw`w-full h-full bg-gradient-to-br from-yellow-400 via-pink-500 to-purple-600 rounded-full`}
-          />
-        </View>
-        <View style={tw`absolute right-16 top-32 w-80 h-52 opacity-20`}>
-          <View
-            style={tw`w-full h-full bg-gradient-to-br from-green-400 via-blue-500 to-indigo-600 rounded-full`}
-          />
-        </View>
-        <View style={tw`absolute right-20 bottom-32 w-80 h-52 opacity-20`}>
-          <View
-            style={tw`w-full h-full bg-gradient-to-br from-red-400 via-orange-500 to-yellow-600 rounded-full`}
-          />
-        </View>
-        <View style={tw`absolute -left-10 bottom-20 w-80 h-52 opacity-20`}>
-          <View
-            style={tw`w-full h-full bg-gradient-to-br from-purple-400 via-pink-500 to-red-600 rounded-full`}
-          />
-        </View>
-        <View style={tw`absolute -left-50 top-96 w-80 h-52 opacity-20`}>
-          <View
-            style={tw`w-full h-full bg-gradient-to-br from-blue-400 via-purple-500 to-pink-600 rounded-full`}
-          />
-        </View>
+        <Image
+          source={require('../../../../libs/shared/src/images/success-confetti.png')}
+          style={tw`w-full h-full`}
+          resizeMode="cover"
+        />
       </Animated.View>
 
       {/* Main Content */}
@@ -148,7 +124,11 @@ export default function OrderSuccessScreen({
             },
           ]}
         >
-          <Package size={40} color={colors.complimentary} />
+          <Image
+            source={require('../../../../libs/shared/src/images/package-delivered.png')}
+            style={tw`w-16 h-16`}
+            resizeMode="contain"
+          />
         </View>
 
         {/* Success Message */}
