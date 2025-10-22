@@ -2,8 +2,25 @@ import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { ApolloProvider } from '@apollo/client';
-import { client } from '@thimblely/shared';
+import {
+  ApolloProvider,
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+} from '@apollo/client';
+
+// Create Apollo Client
+const client = new ApolloClient({
+  link: new HttpLink({
+    uri: 'http://localhost:4000/graphql',
+  }),
+  cache: new InMemoryCache(),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network',
+    },
+  },
+});
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 
@@ -31,6 +48,12 @@ import MeasurementFormScreen from './screens/profile/MeasurementFormScreen';
 import NotificationsScreen from './screens/profile/NotificationsScreen';
 import ClientCrmScreen from './screens/workspaceSubModules/ClientCrmScreen';
 import ClientDetailScreen from './screens/workspaceSubModules/ClientDetailScreen';
+import TeamManagementScreen from './screens/workspaceSubModules/TeamManagementScreen';
+import TeamProfileScreen from './screens/workspaceSubModules/TeamProfileScreen';
+import InventoryScreen from './screens/workspaceSubModules/InventoryScreen';
+import InventoryItemDetailScreen from './screens/workspaceSubModules/InventoryItemDetailScreen';
+import OrdersScreen from './screens/workspaceSubModules/OrdersScreen';
+import OrderDetailScreen from './screens/workspaceSubModules/OrderDetailScreen';
 
 export type RootStackParamList = {
   Landing: undefined;
@@ -52,6 +75,12 @@ export type RootStackParamList = {
   MeasurementForm: { templateId: string };
   ClientCrm: undefined;
   ClientDetail: { clientId: string };
+  TeamManagement: undefined;
+  TeamProfile: { member: any };
+  Inventory: undefined;
+  InventoryItemDetail: { item: any };
+  Orders: undefined;
+  OrderDetail: { order: any };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -131,6 +160,18 @@ export default function App() {
           />
           <Stack.Screen name="ClientCrm" component={ClientCrmScreen} />
           <Stack.Screen name="ClientDetail" component={ClientDetailScreen} />
+          <Stack.Screen
+            name="TeamManagement"
+            component={TeamManagementScreen}
+          />
+          <Stack.Screen name="TeamProfile" component={TeamProfileScreen} />
+          <Stack.Screen name="Inventory" component={InventoryScreen} />
+          <Stack.Screen
+            name="InventoryItemDetail"
+            component={InventoryItemDetailScreen}
+          />
+          <Stack.Screen name="Orders" component={OrdersScreen} />
+          <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

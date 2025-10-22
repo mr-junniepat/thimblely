@@ -238,9 +238,9 @@ export default function FeedScreen() {
     () => (
       <>
         {/* Stories Row */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
           nestedScrollEnabled={false}
           contentContainerStyle={{
             paddingHorizontal: 24,
@@ -250,15 +250,15 @@ export default function FeedScreen() {
           }}
         >
           {storyStates.map((story) => (
-          <StoryItem
-            key={story.id}
+            <StoryItem
+              key={story.id}
               story={story}
               onPress={() => handleStoryPress(story.id)}
-          />
-        ))}
-      </ScrollView>
+            />
+          ))}
+        </ScrollView>
 
-      {/* Filter Chips */}
+        {/* Filter Chips */}
         <View
           style={{
             height: 50,
@@ -269,17 +269,17 @@ export default function FeedScreen() {
           }}
         >
           <View style={[tw`px-6 flex-row items-center`, { gap: 8 }]}>
-        {filters.map((filter) => (
+            {filters.map((filter) => (
               <Chip
-            key={filter.id}
-            label={filter.label}
-            icon={filter.icon}
+                key={filter.id}
+                label={filter.label}
+                icon={filter.icon}
                 active={activeFilter === filter.id}
                 onPress={() => handleFilterPress(filter.id)}
                 size="small"
                 iconPosition="left"
-          />
-        ))}
+              />
+            ))}
           </View>
         </View>
       </>

@@ -1,12 +1,17 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
-import { ChevronLeft, Mail, Phone, Building, Ruler } from 'lucide-react-native';
+import {
+  ChevronLeft,
+  Mail,
+  Phone,
+  Building,
+  Ruler,
+  Scissors,
+  Zap,
+} from 'lucide-react-native';
 import { faker } from '@faker-js/faker';
 import { SendTemplateModal, MeasurementDetailsModal } from '../../components';
-
-// Import background SVG
-const bgClientSvg = require('@thimblely/shared/images/bgclient.svg');
 
 // Import colors directly
 const colors = {
@@ -199,17 +204,33 @@ export default function ClientDetailScreen({ navigation, route }: any) {
           },
         ]}
       >
-        {/* Background SVG */}
-        <Image
-          source={bgClientSvg}
-          style={[
-            tw`absolute inset-0`,
-            {
-              opacity: 0.1,
-              resizeMode: 'cover',
-            },
-          ]}
-        />
+        {/* Background Tailoring Icons */}
+        <View style={tw`absolute inset-0 opacity-10`}>
+          <View style={tw`absolute top-8 left-8`}>
+            <Scissors size={24} color="white" />
+          </View>
+          <View style={tw`absolute top-16 right-12`}>
+            <Ruler size={20} color="white" />
+          </View>
+          <View style={tw`absolute top-32 left-16`}>
+            <Zap size={18} color="white" />
+          </View>
+          <View style={tw`absolute top-20 right-20`}>
+            <Scissors size={22} color="white" />
+          </View>
+          <View style={tw`absolute top-40 left-12`}>
+            <Ruler size={16} color="white" />
+          </View>
+          <View style={tw`absolute top-28 right-16`}>
+            <Zap size={19} color="white" />
+          </View>
+          <View style={tw`absolute top-12 left-24`}>
+            <Scissors size={14} color="white" />
+          </View>
+          <View style={tw`absolute top-36 right-8`}>
+            <Ruler size={17} color="white" />
+          </View>
+        </View>
         {/* Back Button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}

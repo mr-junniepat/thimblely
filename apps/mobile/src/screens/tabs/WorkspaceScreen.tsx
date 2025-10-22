@@ -205,16 +205,13 @@ export default function WorkspaceScreen() {
         console.log('Finance module pressed');
         break;
       case '4': // Inventory
-        // TODO: Create Inventory screen
-        console.log('Inventory module pressed');
+        navigation.navigate('Inventory' as never);
         break;
       case '5': // Orders
-        // TODO: Create Orders screen
-        console.log('Orders module pressed');
+        navigation.navigate('Orders' as never);
         break;
       case '6': // Team Management
-        // TODO: Create Team Management screen
-        console.log('Team Management module pressed');
+        navigation.navigate('TeamManagement');
         break;
       default:
         console.log('Unknown module pressed:', moduleId);
