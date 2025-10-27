@@ -1,0 +1,288 @@
+erDiagram
+    auth_users ||--|| profiles : "1:1"
+    
+    profiles ||--o{ workspaces : "owns"
+    profiles ||--o{ workspace_members : "member"
+    profiles ||--o{ verification_logs : "logs"
+    profiles ||--o{ auth_sessions : "sessions"
+    profiles ||--o{ oauth_connections : "connects"
+    profiles ||--o{ social_media_connections : "personal"
+    profiles ||--o{ feeds : "personal"
+    profiles ||--o{ feed_likes : "likes"
+    profiles ||--o{ feed_comments : "comments"
+    profiles ||--o{ feed_shares : "shares"
+    profiles ||--o{ notifications : "receives"
+    
+    workspaces ||--o{ workspace_members : "has"
+    workspaces ||--o{ workspace_invitations : "invites"
+    workspaces ||--o{ clients : "has"
+    workspaces ||--o{ orders : "has"
+    workspaces ||--o{ inventory_items : "has"
+    workspaces ||--o{ transactions : "has"
+    workspaces ||--o{ financial_goals : "tracks"
+    workspaces ||--o{ auto_splits : "has"
+    workspaces ||--o{ invoices : "generates"
+    workspaces ||--o{ events : "schedules"
+    workspaces ||--o{ communication_channels : "connects"
+    workspaces ||--o{ messages : "receives"
+    workspaces ||--o{ marketplace_products : "sells"
+    workspaces ||--o{ feeds : "business"
+    workspaces ||--o{ social_media_connections : "business"
+    
+    clients ||--o{ client_interactions : "history"
+    clients ||--o{ client_measurements : "measurements"
+    clients ||--o{ orders : "places"
+    clients ||--o{ invoices : "billed"
+    
+    orders ||--o{ order_items : "contains"
+    orders ||--o{ invoices : "generates"
+    
+    inventory_items ||--o{ order_items : "used_in"
+    inventory_items ||--o{ inventory_movements : "tracks"
+    
+    feeds ||--o{ feed_cross_posts : "posted_to"
+    feeds ||--o{ feed_likes : "liked"
+    feeds ||--o{ feed_comments : "commented"
+    feeds ||--o{ feed_shares : "shared"
+    
+    feed_comments ||--o{ feed_comments : "nested_replies"
+    
+    marketplace_products ||--o{ product_reviews : "reviewed"
+    marketplace_products ||--o{ product_likes : "liked"
+    
+    communication_channels ||--o{ messages : "receives"
+    
+    events ||--o{ event_reminders : "reminds"
+    
+    social_media_connections ||--o{ feed_cross_posts : "uses"
+    
+    %% Authentication Tables
+    auth_users {
+        uuid id PK
+        text email
+        text encrypted_password
+    }
+    
+    profiles {
+        uuid id PK
+        text email UK
+        text role "business/customer/admin"
+        text country_code
+        boolean is_verified
+        boolean is_active
+    }
+    
+    verification_logs {
+        uuid id PK
+        uuid user_id FK
+        text verification_type
+        text status
+    }
+    
+    auth_sessions {
+        uuid id PK
+        uuid user_id FK
+        text session_token
+    }
+    
+    oauth_connections {
+        uuid id PK
+        uuid user_id FK
+        text provider "google/apple"
+    }
+    
+    social_media_connections {
+        uuid id PK
+        uuid user_id FK
+        uuid workspace_id FK
+        text platform "instagram/tiktok"
+    }
+    
+    %% Workspace Tables
+    workspaces {
+        uuid id PK
+        uuid owner_id FK
+        text name
+        text slug UK
+    }
+    
+    workspace_members {
+        uuid id PK
+        uuid workspace_id FK
+        uuid user_id FK
+        text role "owner/admin/member/viewer"
+    }
+    
+    workspace_invitations {
+        uuid id PK
+        uuid workspace_id FK
+        text email
+    }
+    
+    %% CRM Tables
+    clients {
+        uuid id PK
+        uuid workspace_id FK
+        text name
+        text email
+        text status
+    }
+    
+    client_interactions {
+        uuid id PK
+        uuid client_id FK
+        text interaction_type
+    }
+    
+    client_measurements {
+        uuid id PK
+        uuid client_id FK
+        jsonb measurements
+    }
+    
+    %% Orders Tables
+    orders {
+        uuid id PK
+        uuid workspace_id FK
+        uuid client_id FK
+        text order_number UK
+        decimal total_amount
+    }
+    
+    order_items {
+        uuid id PK
+        uuid order_id FK
+        uuid inventory_item_id FK
+        int quantity
+    }
+    
+    %% Inventory Tables
+    inventory_items {
+        uuid id PK
+        uuid workspace_id FK
+        text sku UK
+        int current_stock
+    }
+    
+    inventory_movements {
+        uuid id PK
+        uuid inventory_item_id FK
+        text movement_type
+    }
+    
+    %% Finance Tables
+    transactions {
+        uuid id PK
+        uuid workspace_id FK
+        text transaction_type "income/expense"
+        decimal amount
+    }
+    
+    financial_goals {
+        uuid id PK
+        uuid workspace_id FK
+        decimal target_amount
+    }
+    
+    auto_splits {
+        uuid id PK
+        uuid workspace_id FK
+        text split_type
+    }
+    
+    invoices {
+        uuid id PK
+        uuid workspace_id FK
+        uuid order_id FK
+        uuid client_id FK
+    }
+    
+    %% Calendar Tables
+    events {
+        uuid id PK
+        uuid workspace_id FK
+        uuid user_id FK
+        timestamp start_time
+    }
+    
+    event_reminders {
+        uuid id PK
+        uuid event_id FK
+        uuid user_id FK
+    }
+    
+    %% Communication Tables
+    communication_channels {
+        uuid id PK
+        uuid workspace_id FK
+        text channel_type "whatsapp/telegram"
+    }
+    
+    messages {
+        uuid id PK
+        uuid workspace_id FK
+        uuid channel_id FK
+        uuid client_id FK
+    }
+    
+    %% Feeds Tables
+    feeds {
+        uuid id PK
+        uuid user_id FK
+        uuid workspace_id FK
+        text feed_type "image/video"
+    }
+    
+    feed_cross_posts {
+        uuid id PK
+        uuid feed_id FK
+        uuid social_connection_id FK
+    }
+    
+    feed_likes {
+        uuid id PK
+        uuid feed_id FK
+        uuid user_id FK
+    }
+    
+    feed_comments {
+        uuid id PK
+        uuid feed_id FK
+        uuid user_id FK
+        uuid parent_comment_id FK
+    }
+    
+    feed_shares {
+        uuid id PK
+        uuid feed_id FK
+        uuid user_id FK
+    }
+    
+    %% Marketplace Tables
+    marketplace_products {
+        uuid id PK
+        uuid workspace_id FK
+        uuid seller_id FK
+        decimal price
+    }
+    
+    product_reviews {
+        uuid id PK
+        uuid product_id FK
+        uuid user_id FK
+    }
+    
+    product_likes {
+        uuid id PK
+        uuid product_id FK
+        uuid user_id FK
+    }
+    
+    %% Notifications
+    notifications {
+        uuid id PK
+        uuid user_id FK
+        uuid workspace_id FK
+        boolean is_read
+    }
+

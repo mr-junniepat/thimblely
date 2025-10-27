@@ -1,0 +1,272 @@
+{
+  "title": "Thimblely Database Relationships Diagram",
+  "description": "Complete ERD showing all 34 tables and their relationships",
+  "tables": [
+    {
+      "name": "auth.users",
+      "module": "Authentication",
+      "position": { "x": 0, "y": 0 },
+      "columns": ["id", "email", "encrypted_password"],
+      "color": "#1A73E8"
+    },
+    {
+      "name": "profiles",
+      "module": "Authentication",
+      "position": { "x": 0, "y": 120 },
+      "columns": [
+        "id",
+        "email",
+        "role",
+        "country_code",
+        "region",
+        "is_verified",
+        "is_active"
+      ],
+      "color": "#1A73E8",
+      "relationships": [
+        {
+          "to": "auth.users",
+          "type": "1:1",
+          "description": "profiles.id = auth.users.id"
+        }
+      ]
+    },
+    {
+      "name": "workspaces",
+      "module": "Workspace",
+      "position": { "x": 300, "y": 120 },
+      "columns": [
+        "id",
+        "owner_id",
+        "name",
+        "slug",
+        "business_type",
+        "subscription_tier"
+      ],
+      "color": "#34C759",
+      "relationships": [
+        { "to": "profiles", "type": "many:1", "description": "owner_id" },
+        { "to": "clients", "type": "1:many", "description": "workspace_id" },
+        { "to": "orders", "type": "1:many", "description": "workspace_id" },
+        {
+          "to": "inventory_items",
+          "type": "1:many",
+          "description": "workspace_id"
+        },
+        {
+          "to": "transactions",
+          "type": "1:many",
+          "description": "workspace_id"
+        },
+        {
+          "to": "financial_goals",
+          "type": "1:many",
+          "description": "workspace_id"
+        },
+        { "to": "invoices", "type": "1:many", "description": "workspace_id" },
+        { "to": "events", "type": "1:many", "description": "workspace_id" },
+        {
+          "to": "communication_channels",
+          "type": "1:many",
+          "description": "workspace_id"
+        },
+        {
+          "to": "marketplace_products",
+          "type": "1:many",
+          "description": "workspace_id"
+        }
+      ]
+    },
+    {
+      "name": "clients",
+      "module": "CRM",
+      "position": { "x": 0, "y": 360 },
+      "columns": [
+        "id",
+        "workspace_id",
+        "name",
+        "email",
+        "phone",
+        "status",
+        "priority"
+      ],
+      "color": "#FBBC04",
+      "relationships": [
+        { "to": "workspaces", "type": "many:1", "description": "workspace_id" },
+        { "to": "orders", "type": "1:many", "description": "client_id" },
+        { "to": "invoices", "type": "1:many", "description": "client_id" },
+        { "to": "client_interactions", "type": "1:many" },
+        { "to": "client_measurements", "type": "1:many" }
+      ]
+    },
+    {
+      "name": "orders",
+      "module": "Orders",
+      "position": { "x": 300, "y": 360 },
+      "columns": [
+        "id",
+        "workspace_id",
+        "client_id",
+        "order_number",
+        "status",
+        "total_amount"
+      ],
+      "color": "#9345FF",
+      "relationships": [
+        { "to": "workspaces", "type": "many:1", "description": "workspace_id" },
+        { "to": "clients", "type": "many:1", "description": "client_id" },
+        { "to": "order_items", "type": "1:many" },
+        { "to": "invoices", "type": "1:many", "description": "order_id" }
+      ]
+    },
+    {
+      "name": "order_items",
+      "module": "Orders",
+      "position": { "x": 600, "y": 360 },
+      "columns": [
+        "id",
+        "order_id",
+        "inventory_item_id",
+        "quantity",
+        "unit_price"
+      ],
+      "color": "#9345FF",
+      "relationships": [
+        { "to": "orders", "type": "many:1", "description": "order_id" },
+        {
+          "to": "inventory_items",
+          "type": "many:1",
+          "description": "inventory_item_id"
+        }
+      ]
+    },
+    {
+      "name": "inventory_items",
+      "module": "Inventory",
+      "position": { "x": 600, "y": 480 },
+      "columns": [
+        "id",
+        "workspace_id",
+        "sku",
+        "name",
+        "current_stock",
+        "status"
+      ],
+      "color": "#DC1E38",
+      "relationships": [
+        { "to": "workspaces", "type": "many:1", "description": "workspace_id" },
+        { "to": "inventory_movements", "type": "1:many" }
+      ]
+    },
+    {
+      "name": "inventory_movements",
+      "module": "Inventory",
+      "position": { "x": 900, "y": 480 },
+      "columns": ["id", "inventory_item_id", "movement_type", "quantity"],
+      "color": "#DC1E38",
+      "relationships": [
+        {
+          "to": "inventory_items",
+          "type": "many:1",
+          "description": "inventory_item_id"
+        }
+      ]
+    },
+    {
+      "name": "transactions",
+      "module": "Finance",
+      "position": { "x": 300, "y": 240 },
+      "columns": ["id", "workspace_id", "transaction_type", "amount", "date"],
+      "color": "#7E3BED",
+      "relationships": [
+        { "to": "workspaces", "type": "many:1", "description": "workspace_id" }
+      ]
+    },
+    {
+      "name": "financial_goals",
+      "module": "Finance",
+      "position": { "x": 0, "y": 240 },
+      "columns": [
+        "id",
+        "workspace_id",
+        "title",
+        "target_amount",
+        "current_amount"
+      ],
+      "color": "#7E3BED",
+      "relationships": [
+        { "to": "workspaces", "type": "many:1", "description": "workspace_id" }
+      ]
+    },
+    {
+      "name": "invoices",
+      "module": "Finance",
+      "position": { "x": 300, "y": 480 },
+      "columns": [
+        "id",
+        "workspace_id",
+        "order_id",
+        "client_id",
+        "invoice_number",
+        "status"
+      ],
+      "color": "#7E3BED",
+      "relationships": [
+        { "to": "workspaces", "type": "many:1", "description": "workspace_id" },
+        { "to": "orders", "type": "many:1", "description": "order_id" },
+        { "to": "clients", "type": "many:1", "description": "client_id" }
+      ]
+    },
+    {
+      "name": "feeds",
+      "module": "Feeds",
+      "position": { "x": 900, "y": 120 },
+      "columns": [
+        "id",
+        "user_id",
+        "workspace_id",
+        "feed_type",
+        "caption",
+        "media_urls"
+      ],
+      "color": "#FF9500",
+      "relationships": [
+        { "to": "profiles", "type": "many:1", "description": "user_id" },
+        { "to": "workspaces", "type": "many:1", "description": "workspace_id" },
+        { "to": "feed_cross_posts", "type": "1:many" },
+        { "to": "feed_likes", "type": "1:many" },
+        { "to": "feed_comments", "type": "1:many" },
+        { "to": "feed_shares", "type": "1:many" }
+      ]
+    },
+    {
+      "name": "marketplace_products",
+      "module": "Marketplace",
+      "position": { "x": 600, "y": 240 },
+      "columns": [
+        "id",
+        "workspace_id",
+        "seller_id",
+        "title",
+        "price",
+        "status"
+      ],
+      "color": "#FF2D55",
+      "relationships": [
+        { "to": "workspaces", "type": "many:1", "description": "workspace_id" },
+        { "to": "product_reviews", "type": "1:many" },
+        { "to": "product_likes", "type": "1:many" }
+      ]
+    }
+  ],
+  "legends": [
+    { "color": "#1A73E8", "label": "Authentication Module" },
+    { "color": "#34C759", "label": "Workspace Management" },
+    { "color": "#FBBC04", "label": "CRM Module" },
+    { "color": "#9345FF", "label": "Orders Module" },
+    { "color": "#DC1E38", "label": "Inventory Module" },
+    { "color": "#7E3BED", "label": "Finance Module" },
+    { "color": "#FF9500", "label": "Feeds Module" },
+    { "color": "#FF2D55", "label": "Marketplace Module" }
+  ]
+}
