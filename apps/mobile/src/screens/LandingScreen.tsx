@@ -389,7 +389,7 @@ export default function LandingScreen({ navigation }: LandingScreenProps) {
               { fontFamily: 'Outfit-Regular' },
             ]}
           >
-            By signing up, you accept stitchmeister{' '}
+            By signing up, you accept thimblely{' '}
             <Text style={tw`underline`}>Terms of Services</Text> and acknowledge
             that you have read the <Text style={tw`underline`}>privacy</Text>{' '}
             and <Text style={tw`underline`}>cookies</Text>.

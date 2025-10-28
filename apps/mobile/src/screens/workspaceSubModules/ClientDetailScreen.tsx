@@ -48,7 +48,7 @@ interface ClientDetail {
 const clientDetail: ClientDetail = {
   id: '1',
   name: 'Sola David',
-  email: 'marcussews@stitchmeister.com',
+  email: 'marcussews@thimblely.com',
   phone: '+2348945883745',
   company: 'JumpLLC',
   avatar: faker.image.avatar(),

@@ -36,14 +36,8 @@ export default function WorkspaceStatCard({
   return (
     <View
       style={[
-        tw`flex-1 bg-white p-4 rounded-lg flex-row items-center gap-4`,
-        {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 10,
-          elevation: 4,
-        },
+        tw`flex-1 bg-[#F9FAFB] p-4 rounded-lg flex-row items-center gap-4`,
+        {},
       ]}
     >
       {iconSource ? (

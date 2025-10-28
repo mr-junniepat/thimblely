@@ -188,8 +188,7 @@ export default function WorkspaceScreen() {
         navigation.navigate('ClientCrm' as never);
         break;
       case '3': // Finance
-        // TODO: Create Finance screen
-        console.log('Finance module pressed');
+        navigation.navigate('Finance' as never);
         break;
       case '4': // Inventory
         navigation.navigate('Inventory' as never);

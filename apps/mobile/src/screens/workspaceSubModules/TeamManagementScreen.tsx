@@ -59,7 +59,7 @@ const teamMembers: TeamMember[] = [
   {
     id: '1',
     name: 'Patrick Igwe',
-    email: 'marcussews@stitchmeister.com',
+    email: 'marcussews@thimblely.com',
     phone: '+2348945883745',
     role: 'Owner',
     joinedDate: 'July 23, 2025',

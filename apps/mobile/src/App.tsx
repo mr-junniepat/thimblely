@@ -54,6 +54,8 @@ import InventoryScreen from './screens/workspaceSubModules/InventoryScreen';
 import InventoryItemDetailScreen from './screens/workspaceSubModules/InventoryItemDetailScreen';
 import OrdersScreen from './screens/workspaceSubModules/OrdersScreen';
 import OrderDetailScreen from './screens/workspaceSubModules/OrderDetailScreen';
+import FinanceScreen from './screens/workspaceSubModules/FinanceScreen';
+import CreateInvoiceScreen from './screens/workspaceSubModules/CreateInvoiceScreen';
 
 export type RootStackParamList = {
   Landing: undefined;
@@ -81,6 +83,8 @@ export type RootStackParamList = {
   InventoryItemDetail: { item: any };
   Orders: undefined;
   OrderDetail: { order: any };
+  Finance: undefined;
+  CreateInvoice: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -172,6 +176,8 @@ export default function App() {
           />
           <Stack.Screen name="Orders" component={OrdersScreen} />
           <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+          <Stack.Screen name="Finance" component={FinanceScreen} />
+          <Stack.Screen name="CreateInvoice" component={CreateInvoiceScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

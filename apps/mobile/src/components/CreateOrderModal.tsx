@@ -45,7 +45,8 @@ interface CreateOrderModalProps {
   onComplete: (orderData: any) => void;
 }
 
-const mockCustomers: Customer[] = [
+// Generate mock customers using faker
+const generateMockCustomers = (): Customer[] => [
   {
     id: '1',
     name: faker.person.fullName(),
@@ -87,6 +88,8 @@ const mockCustomers: Customer[] = [
     phone: faker.phone.number(),
   },
 ];
+
+const mockCustomers: Customer[] = generateMockCustomers();
 
 const priorityOptions = [
   { id: 'low', label: 'Low' },
@@ -178,10 +181,6 @@ export default function CreateOrderModal({
         return item;
       })
     );
-  };
-
-  const handleRemoveItem = (id: string) => {
-    setOrderItems((items) => items.filter((item) => item.id !== id));
   };
 
   const handleNext = () => {
