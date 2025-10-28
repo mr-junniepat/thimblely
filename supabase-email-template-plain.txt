@@ -1,0 +1,14 @@
+Welcome to Thimblely!
+
+Thank you for signing up. To complete your registration, please enter the verification code below:
+
+VERIFICATION CODE: {{ .Token }}
+
+This code will expire in 10 minutes.
+
+If you didn't request this verification code, please ignore this email.
+
+--
+© 2024 Thimblely. All rights reserved.
+This is an automated message, please do not reply.
+

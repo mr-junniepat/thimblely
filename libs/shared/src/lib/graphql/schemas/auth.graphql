@@ -1,0 +1,188 @@
+# Authentication GraphQL Schema for Thimberly
+
+type User {
+  id: ID!
+  email: String!
+  role: String! # Business/Customer/Admin
+  country_code: String
+  is_verified: Boolean!
+  is_active: Boolean!
+  owns_workspace: Boolean!
+  created_at: String!
+  updated_at: String!
+}
+
+type Profile {
+  id: ID!
+  email: String! @unique
+  role: String! # Business/Customer/Admin - controls workspace access
+  country_code: String
+  is_verified: Boolean!
+  is_active: Boolean!
+  owns_workspace: Boolean! # true if they created a business workspace
+  metadata: JSON
+  created_at: String!
+  updated_at: String!
+}
+
+type Workspace {
+  id: ID!
+  owner_id: ID! # profiles.id
+  name: String!
+  slug: String! @unique
+  business_type: String
+  is_locked: Boolean!
+  settings: JSON
+  created_at: String!
+  updated_at: String!
+}
+
+type WorkspaceMember {
+  id: ID!
+  workspace_id: ID!
+  user_id: ID! # profiles.id - can be member of multiple workspaces
+  role: String! # owner/admin/manager/employee/team_member
+  permissions: JSON # CASL abilities
+  permissions_version: Int! # increment on permission changes to invalidate JWT
+  invitation_status: String! # pending/active/suspended/removed
+  invited_by: ID
+  removed_at: String
+  removed_by: ID
+  removal_reason: JSON
+  created_at: String!
+  updated_at: String!
+}
+
+type WorkspaceInvitation {
+  id: ID!
+  workspace_id: ID!
+  email: String!
+  role: String!
+  created_at: String!
+  updated_at: String!
+}
+
+type AuthResponse {
+  user: User
+  profile: Profile
+  workspace: Workspace
+  workspace_member: WorkspaceMember
+  token: String!
+  refresh_token: String!
+}
+
+input SignUpInput {
+  email: String!
+  password: String!
+  role: String! # Business/Customer/Admin
+  country_code: String!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+input VerifyEmailInput {
+  email: String!
+  code: String!
+}
+
+input ResendVerificationInput {
+  email: String!
+}
+
+input SocialAuthInput {
+  provider: String! # google/apple
+  access_token: String!
+  id_token: String
+}
+
+input CreateWorkspaceInput {
+  name: String!
+  slug: String!
+  business_type: String!
+}
+
+type Mutation {
+  # Authentication
+  signUp(input: SignUpInput!): AuthResponse!
+  signIn(input: SignInInput!): AuthResponse!
+  signOut: Boolean!
+
+  # Email Verification
+  verifyEmail(input: VerifyEmailInput!): Boolean!
+  resendVerification(input: ResendVerificationInput!): Boolean!
+
+  # Social Authentication
+  signInWithGoogle(input: SocialAuthInput!): AuthResponse!
+  signInWithApple(input: SocialAuthInput!): AuthResponse!
+
+  # Password Management
+  requestPasswordReset(email: String!): Boolean!
+  resetPassword(token: String!, password: String!): Boolean!
+  changePassword(oldPassword: String!, newPassword: String!): Boolean!
+
+  # Workspace Management
+  createWorkspace(input: CreateWorkspaceInput!): Workspace!
+  inviteToWorkspace(
+    workspace_id: ID!
+    email: String!
+    role: String!
+  ): WorkspaceInvitation!
+  acceptWorkspaceInvitation(invitation_id: ID!): WorkspaceMember!
+  removeWorkspaceMember(workspace_id: ID!, user_id: ID!): Boolean!
+
+  # Profile Management
+  updateProfile(input: UpdateProfileInput!): Profile!
+  updateProfileSettings(input: UpdateProfileSettingsInput!): ProfileSettings!
+}
+
+type Query {
+  # Current User
+  me: Profile!
+  myWorkspaces: [Workspace!]!
+  currentWorkspace: Workspace
+
+  # User Profile
+  user(id: ID!): User
+  profile(id: ID!): Profile
+
+  # Workspaces
+  workspace(id: ID!): Workspace
+  workspaceBySlug(slug: String!): Workspace
+  workspaceMembers(workspace_id: ID!): [WorkspaceMember!]!
+  workspaceInvitations(workspace_id: ID!): [WorkspaceInvitation!]!
+
+  # Authentication Status
+  isAuthenticated: Boolean!
+  session: Session
+}
+
+type Session {
+  access_token: String!
+  token_type: String!
+  expires_in: Int!
+  refresh_token: String!
+  user: User!
+}
+
+input UpdateProfileInput {
+  email: String
+  country_code: String
+  metadata: JSON
+}
+
+input UpdateProfileSettingsInput {
+  privacy_settings: JSON
+  notification_preferences: JSON
+}
+
+type ProfileSettings {
+  id: ID!
+  user_id: ID!
+  privacy_settings: JSON
+  notification_preferences: JSON
+  created_at: String!
+  updated_at: String!
+}

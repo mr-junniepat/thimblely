@@ -16,6 +16,9 @@
     }
   },
   "dependencies": {
+    "@apollo/client": "^4.0.8",
+    "@supabase/supabase-js": "^2.76.1",
+    "graphql": "^16.11.0",
     "tslib": "^2.3.0"
   }
 }

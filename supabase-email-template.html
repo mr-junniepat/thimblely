@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Your Account</title>
+  </head>
+  <body
+    style="
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    "
+  >
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 30px">
+      <h1 style="color: #a30552; margin: 0">Thimblely</h1>
+      <p style="color: #68666f; margin: 5px 0">Verify Your Account</p>
+    </div>
+
+    <!-- Main Content -->
+    <div
+      style="
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 30px;
+      "
+    >
+      <h2 style="color: #111113; margin-top: 0">Welcome to Thimblely!</h2>
+
+      <p style="color: #68666f">
+        Thank you for signing up. To complete your registration, please enter
+        the verification code below:
+      </p>
+
+      <!-- OTP Code -->
+      <div
+        style="
+          background: #f9fafb;
+          border: 2px dashed #a30552;
+          border-radius: 8px;
+          padding: 20px;
+          text-align: center;
+          margin: 30px 0;
+        "
+      >
+        <p style="color: #68666f; font-size: 14px; margin: 0 0 10px 0">
+          Your verification code
+        </p>
+        <h1
+          style="
+            color: #a30552;
+            font-size: 36px;
+            letter-spacing: 8px;
+            margin: 0;
+            font-weight: bold;
+          "
+        >
+          {{ .Token }}
+        </h1>
+      </div>
+
+      <p style="color: #68666f; font-size: 14px; margin: 20px 0 0 0">
+        This code will expire in <strong>10 minutes</strong> for your security.
+      </p>
+
+      <p style="color: #68666f; font-size: 14px; margin: 20px 0 0 0">
+        If you didn't request this verification code, please ignore this email.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div
+      style="
+        text-align: center;
+        margin-top: 30px;
+        color: #9ca3af;
+        font-size: 12px;
+      "
+    >
+      <p style="margin: 5px 0">© 2024 Thimblely. All rights reserved.</p>
+      <p style="margin: 5px 0">
+        This is an automated message, please do not reply.
+      </p>
+    </div>
+  </body>
+</html>

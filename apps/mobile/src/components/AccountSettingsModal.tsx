@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import tw from 'twrnc';
 import {
   Lock,
@@ -10,6 +10,9 @@ import {
   LogOut,
 } from 'lucide-react-native';
 import BaseModal from './BaseModal';
+import { useAuthContext } from '../contexts/AuthContext';
+import Toast from './Toast';
+import { useToast } from '../hooks';
 
 // Import colors directly
 const colors = {
@@ -58,6 +61,43 @@ export default function AccountSettingsModal({
   onClose,
   navigation,
 }: AccountSettingsModalProps) {
+  const { signOut } = useAuthContext();
+  const { toast, showToast, hideToast } = useToast();
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            const result = await signOut();
+            if (result.success) {
+              onClose();
+              showToast('Logged out successfully', 'success');
+              // Navigate to login screen
+              if (navigation) {
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Landing' }],
+                });
+              }
+            } else {
+              showToast('Logout failed. Please try again.', 'error');
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <BaseModal
       visible={visible}
@@ -129,6 +169,7 @@ export default function AccountSettingsModal({
               backgroundColor: '#F5F5F7',
             },
           ]}
+          onPress={handleLogout}
         >
           <Text
             style={[
@@ -144,6 +185,16 @@ export default function AccountSettingsModal({
           <LogOut size={20} color={colors.red} />
         </TouchableOpacity>
       </View>
+
+      {/* Toast */}
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        duration={toast.duration}
+        position={toast.position}
+        onHide={hideToast}
+      />
     </BaseModal>
   );
 }

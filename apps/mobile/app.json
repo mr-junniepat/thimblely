@@ -1,14 +1,18 @@
 {
   "expo": {
-    "name": "Mobile",
-    "slug": "@thimblely/mobile",
+    "name": "Thimblely",
+    "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "main": "index.js",
     "icon": "./assets/images/icon.png",
-    "scheme": "@thimblely/mobile",
+    "scheme": "thimblely",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": "1.0.0",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.junniepat.thimblelymobile"
@@ -35,6 +39,11 @@
           "backgroundColor": "#ffffff"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    }
   }
 }

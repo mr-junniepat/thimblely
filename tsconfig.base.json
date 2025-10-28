@@ -20,7 +20,8 @@
     "baseUrl": ".",
     "paths": {
       "@mobile/*": ["apps/mobile/src/*"],
-      "@thimblely/shared": ["libs/shared/src/index.ts"]
+      "@thimblely/shared": ["libs/shared/src/index.ts"],
+      "@thimblely/shared/lib/*": ["libs/shared/src/lib/*"]
     }
   }
 }

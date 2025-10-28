@@ -1,0 +1,82 @@
+services:
+  thimberly-db:
+    container_name: thimberly_db
+    image: postgres:15-alpine
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-your-super-secret-postgres-password}
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    command: postgres -c listen_addresses='*'
+    ports:
+      - '127.0.0.1:54322:5432'
+    volumes:
+      - thimberly_db_data:/var/lib/postgresql/data
+    networks:
+      - thimberly_network
+    restart: unless-stopped
+
+  thimberly-auth:
+    container_name: thimberly_auth
+    image: supabase/gotrue:v2.143.0
+    depends_on:
+      thimberly-db:
+        condition: service_healthy
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - 'sleep 15 && exec /usr/local/bin/auth'
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://localhost:54324
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:your-super-secret-postgres-password@thimberly-db:5432/postgres
+      GOTRUE_DB_SEARCH_PATH: auth
+      GOTRUE_SITE_URL: http://localhost:19006
+      GOTRUE_URI_ALLOW_LIST: http://localhost:19006,http://localhost:3000
+      GOTRUE_DISABLE_SIGNUP: 'false'
+      GOTRUE_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: 'true'
+      GOTRUE_MAILER_AUTOCONFIRM: 'true'
+    ports:
+      - '127.0.0.1:54324:9999'
+    networks:
+      - thimberly_network
+    restart: unless-stopped
+
+  thimberly-studio:
+    container_name: thimberly_studio
+    image: supabase/studio:latest
+    depends_on:
+      thimberly-db:
+        condition: service_healthy
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:54323:3000'
+    environment:
+      POSTGRES_HOST: thimberly-db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: postgres
+      STUDIO_PG_META_URL: http://thimberly-db:8080
+      DEFAULT_ORGANIZATION_NAME: Thimberly
+      DEFAULT_PROJECT_NAME: Thimberly Project
+      SUPABASE_URL: http://localhost:54321
+      SUPABASE_PUBLIC_URL: http://localhost:54321
+      SUPABASE_ANON_KEY: ${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU}
+    networks:
+      - thimberly_network
+
+volumes:
+  thimberly_db_data:
+
+networks:
+  thimberly_network:
+    name: thimberly_network

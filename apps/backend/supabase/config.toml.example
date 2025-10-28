@@ -1,0 +1,80 @@
+# Supabase project configuration
+# This file is used by the Supabase CLI
+
+[project]
+id = "your-project-id"
+name = "thimblely"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[db.health_check]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+smtp_port = 54325
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+redirect_urls = ["http://localhost:3000/**"]
+jwt_expiry = 3600
+enable_signup = true
+enable_email_signup = true
+enable_email_confirmations = true
+email_change_confirm_enabled = false
+email_change_confirm_enabled = false
+sms_provider = "infobip"
+sms_autoconfirm = false
+sms_test_otp = "123456"
+sms_test_otp_valid_until = "2025-12-31T23:59:59Z"
+enable_phone_signup = false
+enable_phone_confirmations = true
+phone_test_otp = "123456"
+phone_test_otp_valid_until = "2025-12-31T23:59:59Z"
+
+[auth.external.infobip]
+enabled = true
+api_url = "https://ypz669.api.infobip.com"
+application_id = "C69D2C8545D99BE511A5F7ACD3FA44AA"
+api_key = "9b5d308914388ae9c2f94c19678884e7-96658137-e1a9-4a66-8d92-8079f45309a4"
+message_template_id = "6D83916B5AFE3802E4500D69993F8C17"
+
+[auth.external.google]
+enabled = true
+client_id = env.SUPABASE_AUTH_GOOGLE_CLIENT_ID
+secret = env.SUPABASE_AUTH_GOOGLE_SECRET
+
+[auth.external.apple]
+enabled = true
+client_id = env.SUPABASE_AUTH_APPLE_CLIENT_ID
+secret = env.SUPABASE_AUTH_APPLE_SECRET
+
+[graphql]
+enabled = true
+default_role = "anon"
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth.email]
+enable_signup = true
+double_confirm_email = true
+enable_confirmations = true
+enable_secure_email_change_enabled = false
+

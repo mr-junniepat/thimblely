@@ -32,7 +32,7 @@ export function Input({
   ...props
 }: InputProps) {
   return (
-    <View style={[{ marginBottom: 24 }, containerStyle]}>
+    <View style={[{ marginBottom: 15 }, containerStyle]}>
       {label && (
         <Text
           style={[

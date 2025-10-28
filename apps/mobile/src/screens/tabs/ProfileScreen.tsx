@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import tw from 'twrnc';
 import { Edit3, Plus, Menu, Bell } from 'lucide-react-native';
-import { faker } from '@faker-js/faker';
-import { Header, AccountSettingsModal } from '../../components';
+import { useLazyQuery } from '@apollo/client';
+import {
+  Header,
+  AccountSettingsModal,
+  EditProfileModal,
+} from '../../components';
+import { useAuthContext } from '../../contexts/AuthContext';
+import { GET_USER_POSTS_QUERY } from '@thimblely/shared/lib/graphql/schemas/auth/queries';
 
 // Import colors directly
 const colors = {
@@ -13,32 +19,151 @@ const colors = {
   blue: '#1A73E8',
 };
 
-// Mock user data
-const user = {
-  name: 'Marcus Rodriguez',
-  username: '@marcus_sews',
-  bio: 'Bio...',
-  avatar: faker.image.avatar(),
-  posts: 342,
-  followers: '67k',
-  following: 3,
-  role: 'Designer',
-};
-
-const stats = [
-  { label: 'Posts', value: user.posts },
-  { label: 'Followers', value: user.followers },
-  { label: 'Following', value: user.following },
-];
-
-// Mock posts data
-const posts = Array.from({ length: 6 }, (_, i) => ({
-  id: i + 1,
-  image: faker.image.url(),
-}));
-
 export default function ProfileScreen({ navigation }: any) {
   const [showAccountSettings, setShowAccountSettings] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [activeTab, setActiveTab] = useState<'posts' | 'bookmarks'>('posts');
+  const { user } = useAuthContext();
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [bookmarks, setBookmarks] = useState<any[]>([]);
+
+  // GraphQL query to fetch user posts
+  const [fetchPosts] = useLazyQuery(GET_USER_POSTS_QUERY, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      if (data?.feedsCollection?.edges) {
+        const fetchedPosts = data.feedsCollection.edges.map((edge: any) => ({
+          id: edge.node.id,
+          // Use first media URL from media_urls JSONB array
+          image: edge.node.media_urls?.[0] || '',
+          caption: edge.node.caption,
+        }));
+        setPosts(fetchedPosts);
+      }
+    },
+    onError: (error) => {
+      console.error('Error fetching posts:', error);
+      // Set empty array instead of fallback data
+      setPosts([]);
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      loadProfile();
+      // Fetch posts from database
+      fetchPosts({
+        variables: { userId: user.id },
+      });
+    }
+  }, [user]);
+
+  const loadProfile = async () => {
+    try {
+      setLoading(true);
+
+      if (user) {
+        // For now, fallback to auth metadata until RLS is fixed
+        // TODO: Implement actual GraphQL query when RLS policies are resolved
+        const metadata = user.user_metadata || {};
+        const userType = metadata.userType || 'customer';
+        const firstName = metadata.firstName || '';
+        const lastName = metadata.lastName || '';
+        const fullName =
+          metadata.full_name ||
+          `${firstName} ${lastName}`.trim() ||
+          user.email?.split('@')[0] ||
+          'User';
+
+        setProfile({
+          name: fullName,
+          username: `@${user.email?.split('@')[0] || 'user'}`,
+          bio: metadata.bio || 'Bio...',
+          avatar:
+            metadata.avatar_url ||
+            `https://ui-avatars.com/api/?name=${fullName}&background=A30552&color=FFFFFF&bold=true`,
+          // TODO: Replace with actual counts from database queries
+          posts: metadata.posts_count || 0,
+          followers: metadata.followers_count || 0,
+          following: metadata.following_count || 0,
+          role: userType === 'business' ? 'Business Owner' : 'Customer',
+        });
+      }
+    } catch (err) {
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const stats = profile
+    ? [
+        { label: 'Posts', value: profile.posts },
+        { label: 'Followers', value: profile.followers },
+        { label: 'Following', value: profile.following },
+      ]
+    : [];
+
+  // Skeleton loader component
+  const SkeletonLoader = () => (
+    <View style={tw`items-center mb-8`}>
+      {/* Avatar skeleton */}
+      <View style={tw`mb-4 w-25 h-25 rounded-full bg-gray-200`} />
+
+      {/* Name skeleton */}
+      <View style={tw`mb-1 w-32 h-6 rounded bg-gray-200`} />
+
+      {/* Username skeleton */}
+      <View style={tw`mb-2 w-24 h-4 rounded bg-gray-200`} />
+
+      {/* Role skeleton */}
+      <View style={tw`mb-2 w-20 h-5 rounded-full bg-gray-200`} />
+
+      {/* Bio skeleton */}
+      <View style={tw`mb-8 w-48 h-4 rounded bg-gray-200`} />
+
+      {/* Stats skeleton */}
+      <View
+        style={[tw`flex-row items-center justify-between mb-6`, { width: 329 }]}
+      >
+        {[1, 2, 3].map((i) => (
+          <View key={i} style={[tw`items-center`, { width: 107 }]}>
+            <View style={tw`mb-1 w-16 h-6 rounded bg-gray-200`} />
+            <View style={tw`w-20 h-4 rounded bg-gray-200`} />
+          </View>
+        ))}
+      </View>
+
+      {/* Button skeleton */}
+      <View style={tw`w-11/12 h-12 rounded-full bg-gray-200`} />
+    </View>
+  );
+
+  if (loading) {
+    return (
+      <View style={tw`flex-1 bg-white`}>
+        <View style={tw`h-12`} />
+        <Header showLogo={true} rightIcons={[]} />
+        <ScrollView>
+          <SkeletonLoader />
+        </ScrollView>
+      </View>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <View style={tw`flex-1 bg-white`}>
+        <View style={tw`h-12`} />
+        <Header showLogo={true} rightIcons={[]} />
+        <View style={tw`flex-1 items-center justify-center`}>
+          <Text style={tw`text-gray-500`}>Failed to load profile</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={tw`flex-1 bg-white`}>
@@ -73,7 +198,7 @@ export default function ProfileScreen({ navigation }: any) {
           {/* Avatar */}
           <View style={tw`mb-4`}>
             <Image
-              source={{ uri: user.avatar }}
+              source={{ uri: profile.avatar }}
               style={tw`w-25 h-25 rounded-full`}
               resizeMode="cover"
             />
@@ -89,7 +214,7 @@ export default function ProfileScreen({ navigation }: any) {
               },
             ]}
           >
-            {user.name}
+            {profile.name}
           </Text>
           <Text
             style={[
@@ -100,7 +225,7 @@ export default function ProfileScreen({ navigation }: any) {
               },
             ]}
           >
-            {user.username}
+            {profile.username}
           </Text>
 
           {/* Role Badge */}
@@ -121,7 +246,7 @@ export default function ProfileScreen({ navigation }: any) {
                 },
               ]}
             >
-              {user.role}
+              {profile.role}
             </Text>
           </View>
 
@@ -135,7 +260,7 @@ export default function ProfileScreen({ navigation }: any) {
               },
             ]}
           >
-            {user.bio}
+            {profile.bio}
           </Text>
 
           {/* Stats - Exact Figma Width (107px each) */}
@@ -182,6 +307,7 @@ export default function ProfileScreen({ navigation }: any) {
                 gap: 8,
               },
             ]}
+            onPress={() => setShowEditProfile(true)}
           >
             <Edit3 size={16} color={colors.complimentary} />
             <Text
@@ -205,12 +331,15 @@ export default function ProfileScreen({ navigation }: any) {
             { height: 48 },
           ]}
         >
-          <View
+          {/* Posts Tab */}
+          <TouchableOpacity
+            onPress={() => setActiveTab('posts')}
             style={[
-              tw`px-4 py-2 border-b`,
+              tw`px-4 py-2`,
               {
-                borderBottomColor: colors.complimentary,
-                borderBottomWidth: 1,
+                borderBottomWidth: activeTab === 'posts' ? 1 : 0,
+                borderBottomColor:
+                  activeTab === 'posts' ? colors.complimentary : 'transparent',
                 height: 48,
                 justifyContent: 'center',
               },
@@ -218,57 +347,148 @@ export default function ProfileScreen({ navigation }: any) {
           >
             <Text
               style={[
-                tw`text-sm font-bold`,
+                tw`text-sm`,
                 {
-                  color: colors.complimentary,
-                  fontFamily: 'Satoshi Variable',
+                  color:
+                    activeTab === 'posts'
+                      ? colors.complimentary
+                      : colors.greyText,
+                  fontFamily:
+                    activeTab === 'posts' ? 'Satoshi Bold' : 'Satoshi Variable',
+                  fontWeight: activeTab === 'posts' ? 'bold' : 'normal',
                 },
               ]}
             >
               Posts
             </Text>
-          </View>
-          <View
-            style={[tw`px-4 py-2`, { height: 48, justifyContent: 'center' }]}
+          </TouchableOpacity>
+
+          {/* Bookmarks Tab */}
+          <TouchableOpacity
+            onPress={() => setActiveTab('bookmarks')}
+            style={[
+              tw`px-4 py-2`,
+              {
+                borderBottomWidth: activeTab === 'bookmarks' ? 1 : 0,
+                borderBottomColor:
+                  activeTab === 'bookmarks'
+                    ? colors.complimentary
+                    : 'transparent',
+                height: 48,
+                justifyContent: 'center',
+              },
+            ]}
           >
             <Text
               style={[
-                tw`text-sm font-normal`,
+                tw`text-sm`,
                 {
-                  color: colors.greyText,
-                  fontFamily: 'Satoshi Variable',
+                  color:
+                    activeTab === 'bookmarks'
+                      ? colors.complimentary
+                      : colors.greyText,
+                  fontFamily:
+                    activeTab === 'bookmarks'
+                      ? 'Satoshi Bold'
+                      : 'Satoshi Variable',
+                  fontWeight: activeTab === 'bookmarks' ? 'bold' : 'normal',
                 },
               ]}
             >
               Bookmarks
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
-        {/* Posts Grid */}
+        {/* Posts or Bookmarks Grid */}
         <View style={tw`px-4`}>
-          <View style={tw`flex-row gap-1 mb-1`}>
-            {posts.slice(0, 3).map((post) => (
-              <View key={post.id} style={tw`flex-1 h-38`}>
-                <Image
-                  source={{ uri: post.image }}
-                  style={tw`w-full h-full`}
-                  resizeMode="cover"
-                />
+          {activeTab === 'posts' ? (
+            /* Posts Grid */
+            posts.length > 0 ? (
+              <>
+                <View style={tw`flex-row gap-1 mb-1`}>
+                  {posts.slice(0, 3).map((post) => (
+                    <View key={post.id} style={tw`flex-1 h-38`}>
+                      <Image
+                        source={{ uri: post.image }}
+                        style={tw`w-full h-full`}
+                        resizeMode="cover"
+                      />
+                    </View>
+                  ))}
+                </View>
+                {posts.length > 3 && (
+                  <View style={tw`flex-row gap-1`}>
+                    {posts.slice(3, 6).map((post) => (
+                      <View key={post.id} style={tw`flex-1 h-38`}>
+                        <Image
+                          source={{ uri: post.image }}
+                          style={tw`w-full h-full`}
+                          resizeMode="cover"
+                        />
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </>
+            ) : (
+              <View style={tw`items-center py-12`}>
+                <Text
+                  style={[
+                    tw`text-base`,
+                    {
+                      color: colors.greyText,
+                      fontFamily: 'Satoshi Variable',
+                    },
+                  ]}
+                >
+                  No posts yet
+                </Text>
               </View>
-            ))}
-          </View>
-          <View style={tw`flex-row gap-1`}>
-            {posts.slice(3, 6).map((post) => (
-              <View key={post.id} style={tw`flex-1 h-38`}>
-                <Image
-                  source={{ uri: post.image }}
-                  style={tw`w-full h-full`}
-                  resizeMode="cover"
-                />
+            )
+          ) : /* Bookmarks Grid */
+          bookmarks.length > 0 ? (
+            <>
+              <View style={tw`flex-row gap-1 mb-1`}>
+                {bookmarks.slice(0, 3).map((bookmark) => (
+                  <View key={bookmark.id} style={tw`flex-1 h-38`}>
+                    <Image
+                      source={{ uri: bookmark.image }}
+                      style={tw`w-full h-full`}
+                      resizeMode="cover"
+                    />
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
+              {bookmarks.length > 3 && (
+                <View style={tw`flex-row gap-1`}>
+                  {bookmarks.slice(3, 6).map((bookmark) => (
+                    <View key={bookmark.id} style={tw`flex-1 h-38`}>
+                      <Image
+                        source={{ uri: bookmark.image }}
+                        style={tw`w-full h-full`}
+                        resizeMode="cover"
+                      />
+                    </View>
+                  ))}
+                </View>
+              )}
+            </>
+          ) : (
+            <View style={tw`items-center py-12`}>
+              <Text
+                style={[
+                  tw`text-base`,
+                  {
+                    color: colors.greyText,
+                    fontFamily: 'Satoshi Variable',
+                  },
+                ]}
+              >
+                No bookmarks yet
+              </Text>
+            </View>
+          )}
         </View>
       </ScrollView>
 
@@ -287,6 +507,7 @@ export default function ProfileScreen({ navigation }: any) {
             elevation: 8,
           },
         ]}
+        onPress={() => navigation.navigate('CreatePost')}
       >
         <Plus size={24} color="white" />
       </TouchableOpacity>
@@ -296,6 +517,25 @@ export default function ProfileScreen({ navigation }: any) {
         visible={showAccountSettings}
         onClose={() => setShowAccountSettings(false)}
         navigation={navigation}
+      />
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        visible={showEditProfile}
+        onClose={() => setShowEditProfile(false)}
+        profile={{
+          name: profile?.name || '',
+          username: profile?.username || '',
+          bio: profile?.bio || '',
+          email: user?.email || '',
+          phone: '',
+          country: '',
+          avatar: profile?.avatar || '',
+        }}
+        onSave={(updatedProfile: any) => {
+          setProfile({ ...profile, ...updatedProfile });
+          setShowEditProfile(false);
+        }}
       />
     </View>
   );

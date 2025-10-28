@@ -1,269 +1,177 @@
-# Thimblely Quick Start Guide
+# Thimberly Quick Start Guide
 
-Get up and running with Thimblely in minutes!
+Get up and running with Thimberly in minutes.
 
 ## Prerequisites
 
-Before you begin, ensure you have:
+- Node.js 18+ installed
+- Docker Desktop installed
+- iOS Simulator (for iOS) or Android Emulator (for Android)
 
-- **Node.js** (v18 or higher) - [Download here](https://nodejs.org/)
-- **npm** (comes with Node.js)
-- **Git** (optional, for version control)
+## Quick Start (5 minutes)
 
-For mobile development, you'll also need:
-- **iOS**: macOS with Xcode installed
-- **Android**: Android Studio with an emulator set up
-- **Physical Device**: Expo Go app installed
-
-## Installation
-
-### 1. Clone or Navigate to the Project
-
-```bash
-cd ~/Desktop/sideprojects/thimblely
-```
-
-### 2. Install Dependencies
+### 1. Install Dependencies
 
 ```bash
 npm install
 ```
 
-This will install all dependencies for the workspace, including both apps and the shared library.
-
-## Running the Landing Page
-
-### Development Mode
+### 2. Set Up Local Supabase
 
 ```bash
-npm run dev:landing
+# Install Supabase CLI
+npm install -g supabase
+
+# Navigate to Supabase directory
+cd apps/backend/supabase
+
+# Initialize Supabase
+supabase init
+
+# Start local Supabase
+supabase start
 ```
 
-Or using Nx directly:
+This will start:
+
+- **Supabase Studio**: http://localhost:54323 (Database UI)
+- **Supabase API**: http://localhost:54321
+- **GraphQL API**: http://localhost:54321/graphql/v1
+- **PostgreSQL**: localhost:54322
+
+### 3. Apply Database Migrations
 
 ```bash
-npx nx dev landing
+# From apps/backend/supabase directory
+supabase db reset
 ```
 
-The landing page will be available at:
-**http://localhost:4200**
+This will apply all migrations:
 
-### What You'll See
+- Core auth & workspace tables
+- CRM, orders, inventory
+- Finance, calendar, communication
+- Feeds, marketplace, notifications
 
-- Modern, responsive landing page
-- Hero section with call-to-action
-- Feature cards with icons
-- Statistics section
-- Footer with links
+### 4. Configure Mobile App
 
-## Running the Mobile App
-
-### Start the Development Server
+Create `.env` file in `apps/mobile/`:
 
 ```bash
-npm run dev:mobile
+# Supabase Configuration
+EXPO_PUBLIC_SUPABASE_URL=http://localhost:54321
+EXPO_PUBLIC_SUPABASE_ANON_KEY=<copy from supabase start output>
+
+# Infobip Configuration (for phone verification)
+INFOBIP_BASE_URL=https://ypz669.api.infobip.com
+INFOBIP_API_KEY=9b5d308914388ae9c2f94c19678884e7-96658137-e1a9-4a66-8d92-8079f45309a4
+INFOBIP_APPLICATION_ID=C69D2C8545D99BE511A5F7ACD3FA44AA
+INFOBIP_MESSAGE_TEMPLATE_ID=6D83916B5AFE3802E4500D69993F8C17
+
+# GraphQL URL
+EXPO_PUBLIC_GRAPHQL_URL=http://localhost:54321/graphql/v1
+NODE_ENV=development
 ```
 
-Or using Nx directly:
+### 5. Start Mobile App
 
 ```bash
-npx nx start mobile
+cd apps/mobile
+npx expo start
 ```
 
-### Run on a Device
+Then press:
 
-Once the dev server is running, you have several options:
+- `i` to open iOS Simulator
+- `a` to open Android Emulator
+- `w` to open in web browser
 
-#### Option 1: iOS Simulator (macOS only)
+## What's Next?
+
+### For Authentication
+
+- Check `apps/mobile/src/screens/LoginScreen.tsx`
+- GraphQL queries: `libs/shared/src/lib/graphql/schemas/auth/queries.ts`
+- GraphQL mutations: `libs/shared/src/lib/graphql/schemas/auth/mutations.ts`
+
+### For Database Schema
+
+- ERD: `apps/backend/supabase/database-erd-optimized.mmd`
+- Security: `apps/backend/supabase/SECURITY_REQUIREMENTS.md`
+- Migrations: `apps/backend/supabase/migrations/`
+
+### For Development
+
+- Run `supabase studio` to view database
+- Run `supabase logs` to view logs
+- Run `supabase db reset` to reapply migrations
+
+## Useful Commands
 
 ```bash
-npx nx run-ios mobile
+# Start Supabase
+cd apps/backend/supabase
+supabase start
+
+# Stop Supabase
+supabase stop
+
+# Reset database
+supabase db reset
+
+# View logs
+supabase logs
+
+# Start mobile app
+cd apps/mobile
+npx expo start --clear
 ```
 
-#### Option 2: Android Emulator
+## Troubleshooting
+
+### Port Conflicts
+
+If ports are in use, stop Supabase and restart:
 
 ```bash
-npx nx run-android mobile
+supabase stop
+supabase start
 ```
 
-#### Option 3: Physical Device
+### Database Issues
 
-1. Install the **Expo Go** app on your phone
-2. Scan the QR code shown in your terminal
-3. The app will load on your device
+Reset the database:
 
-### What You'll See
+```bash
+supabase db reset
+```
 
-- Home screen with feature cards
-- Navigation to detail screens
-- Statistics display
-- Touch interactions
+### Mobile App Won't Connect
+
+- Check `.env` file exists in `apps/mobile/`
+- Verify `EXPO_PUBLIC_SUPABASE_URL` is correct
+- Restart Expo with `--clear` flag
 
 ## Project Structure
 
 ```
 apps/
-├── landing/    # Next.js web app (port 4200)
-└── mobile/     # React Native/Expo app
-
+├── mobile/           # React Native mobile app
+│   ├── src/
+│   │   ├── screens/  # UI screens
+│   │   └── components/ # Reusable components
+├── backend/
+│   └── supabase/     # Supabase config & migrations
 libs/
-└── shared/     # Shared code (GraphQL, types, utils)
+└── shared/           # Shared GraphQL queries, mutations
+    └── src/lib/graphql/
+        └── schemas/
+            └── auth/ # Authentication GraphQL operations
 ```
 
-## Making Changes
+## Need Help?
 
-### Edit the Landing Page
-
-Try editing `apps/landing/src/components/Hero.tsx`:
-
-```typescript
-<h1 className={styles.title}>
-  Your Updated Title Here
-</h1>
-```
-
-The page will hot-reload automatically!
-
-### Edit the Mobile App
-
-Try editing `apps/mobile/src/screens/HomeScreen.tsx`:
-
-```typescript
-<Text style={styles.title}>Your Updated Title</Text>
-```
-
-The app will hot-reload on your device/simulator!
-
-### Using the Shared Library
-
-Both apps can use the shared library:
-
-```typescript
-import { formatDate, GET_ITEMS } from '@thimblely/shared';
-```
-
-## Common Commands
-
-### Development
-
-```bash
-npm run dev:landing       # Start landing page
-npm run dev:mobile       # Start mobile app
-```
-
-### Building
-
-```bash
-npm run build:landing    # Build landing page for production
-npm run build:mobile    # Build mobile app
-```
-
-### Nx Commands
-
-```bash
-npx nx graph            # View project dependency graph
-npx nx build shared     # Build shared library
-npx nx sync            # Sync workspace configuration
-```
-
-## Environment Variables
-
-Create a `.env.local` file in the root:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:4000/graphql
-```
-
-## Troubleshooting
-
-### Port Already in Use
-
-If port 4200 is in use:
-
-```bash
-npx nx dev landing --port 3000
-```
-
-### Build Errors
-
-Sync the workspace:
-
-```bash
-npx nx sync
-```
-
-### Module Not Found
-
-Rebuild the shared library:
-
-```bash
-npx nx build shared
-```
-
-### Mobile App Not Loading
-
-1. Make sure you're on the same WiFi network
-2. Try restarting the dev server
-3. Clear the cache: `npx nx reset`
-
-### TypeScript Errors
-
-Make sure all dependencies are installed:
-
-```bash
-npm install
-```
-
-## Next Steps
-
-1. **Explore the Code**: Check out the components and screens
-2. **Add Features**: Try adding new GraphQL queries in `libs/shared`
-3. **Customize Design**: Update colors in the CSS files
-4. **Add Pages**: Create new routes in both apps
-5. **Connect Backend**: Set up your GraphQL API and update the endpoint
-
-## Useful Resources
-
-- [Nx Documentation](https://nx.dev/)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Expo Documentation](https://docs.expo.dev/)
-- [React Navigation](https://reactnavigation.org/)
-- [Apollo Client](https://www.apollographql.com/docs/react/)
-- [Lucide Icons](https://lucide.dev/)
-
-## Getting Help
-
-- Check the [README.md](./README.md) for detailed information
-- Review [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for architecture details
-- Look at example code in the apps
-
-## Development Tips
-
-### Hot Reload
-
-Both apps support hot reload. Changes appear instantly without refreshing.
-
-### Component Development
-
-Create reusable components in the shared library for use across apps.
-
-### GraphQL First
-
-Define all API operations in `libs/shared/src/lib/graphql/`.
-
-### Type Safety
-
-Define types in `libs/shared/src/lib/types/` and use them everywhere.
-
-### Icon Usage
-
-Always use Lucide icons:
-- Web: `lucide-react`
-- Mobile: `lucide-react-native`
-
-## Success! 🎉
-
-You're now ready to build with Thimblely! Start by making small changes and see them appear in real-time.
-
-Happy coding! 👨‍💻👩‍💻
-
+- Check `SETUP_LOCAL_SUPABASE.md` for detailed Supabase setup
+- Check `apps/mobile/ENV_SETUP.md` for environment configuration
+- Check `apps/backend/supabase/README.md` for database migrations
+- Check `libs/shared/src/lib/graphql/schemas/AUTH_SETUP.md` for authentication

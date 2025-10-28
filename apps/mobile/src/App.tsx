@@ -2,25 +2,10 @@ import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import {
-  ApolloProvider,
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-} from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
+import { AuthProvider } from './contexts/AuthContext';
+import { client } from '@thimblely/shared/lib/graphql';
 
-// Create Apollo Client
-const client = new ApolloClient({
-  link: new HttpLink({
-    uri: 'http://localhost:4000/graphql',
-  }),
-  cache: new InMemoryCache(),
-  defaultOptions: {
-    watchQuery: {
-      fetchPolicy: 'cache-and-network',
-    },
-  },
-});
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 
@@ -29,11 +14,13 @@ SplashScreen.preventAutoHideAsync();
 
 // Screens
 import LandingScreen from './screens/LandingScreen';
-import LoginScreen from './screens/LoginScreen';
-import SignUpUserTypeScreen from './screens/SignUpUserTypeScreen';
-import SignUpCountryScreen from './screens/SignUpCountryScreen';
-import SignUpFormScreen from './screens/SignUpFormScreen';
-import SignUpVerifyScreen from './screens/SignUpVerifyScreen';
+import { LoginScreen } from './screens/auth';
+import {
+  SignUpUserTypeScreen,
+  SignUpCountryScreen,
+  SignUpFormScreen,
+  SignUpVerifyScreen,
+} from './screens/auth/signup';
 import MainTabs from './navigation/MainTabs';
 import ManufacturerDetailScreen from './screens/ManufacturerDetailScreen';
 import InfluencerDetailScreen from './screens/InfluencerDetailScreen';
@@ -56,6 +43,8 @@ import OrdersScreen from './screens/workspaceSubModules/OrdersScreen';
 import OrderDetailScreen from './screens/workspaceSubModules/OrderDetailScreen';
 import FinanceScreen from './screens/workspaceSubModules/FinanceScreen';
 import CreateInvoiceScreen from './screens/workspaceSubModules/CreateInvoiceScreen';
+import CreatePostScreen from './screens/CreatePostScreen';
+import PostDetailsScreen from './screens/PostDetailsScreen';
 
 export type RootStackParamList = {
   Landing: undefined;
@@ -85,6 +74,8 @@ export type RootStackParamList = {
   OrderDetail: { order: any };
   Finance: undefined;
   CreateInvoice: undefined;
+  CreatePost: undefined;
+  PostDetails: { selectedImage: string; postType: 'feed' | 'marketplace' };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -108,78 +99,88 @@ export default function App() {
 
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer>
-        <StatusBar style="auto" />
-        <Stack.Navigator
-          initialRouteName="Landing"
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: '#FFFFFF' },
-          }}
-        >
-          <Stack.Screen name="Landing" component={LandingScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen
-            name="SignUpUserType"
-            component={SignUpUserTypeScreen}
-          />
-          <Stack.Screen name="SignUpCountry" component={SignUpCountryScreen} />
-          <Stack.Screen name="SignUpForm" component={SignUpFormScreen} />
-          <Stack.Screen name="SignUpVerify" component={SignUpVerifyScreen} />
-          <Stack.Screen name="MainTabs" component={MainTabs} />
-          <Stack.Screen
-            name="ManufacturerDetail"
-            component={ManufacturerDetailScreen}
-          />
-          <Stack.Screen
-            name="InfluencerDetail"
-            component={InfluencerDetailScreen}
-          />
-          <Stack.Screen name="Calendar" component={CalendarScreen} />
-          <Stack.Screen
-            name="ChangePassword"
-            component={ChangePasswordScreen}
-          />
-          <Stack.Screen
-            name="WorkspaceSecurity"
-            component={WorkspaceSecurityScreen}
-          />
-          <Stack.Screen
-            name="ProfilePrivacy"
-            component={ProfilePrivacyScreen}
-          />
-          <Stack.Screen
-            name="NotificationsScreen"
-            component={NotificationsScreen}
-          />
-          <Stack.Screen
-            name="NotificationSettings"
-            component={NotificationSettingsScreen}
-          />
-          <Stack.Screen name="Activity" component={ActivityScreen} />
-          <Stack.Screen name="HelpSupport" component={HelpSupportScreen} />
-          <Stack.Screen
-            name="MeasurementForm"
-            component={MeasurementFormScreen}
-          />
-          <Stack.Screen name="ClientCrm" component={ClientCrmScreen} />
-          <Stack.Screen name="ClientDetail" component={ClientDetailScreen} />
-          <Stack.Screen
-            name="TeamManagement"
-            component={TeamManagementScreen}
-          />
-          <Stack.Screen name="TeamProfile" component={TeamProfileScreen} />
-          <Stack.Screen name="Inventory" component={InventoryScreen} />
-          <Stack.Screen
-            name="InventoryItemDetail"
-            component={InventoryItemDetailScreen}
-          />
-          <Stack.Screen name="Orders" component={OrdersScreen} />
-          <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
-          <Stack.Screen name="Finance" component={FinanceScreen} />
-          <Stack.Screen name="CreateInvoice" component={CreateInvoiceScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <AuthProvider>
+        <NavigationContainer>
+          <StatusBar style="auto" />
+          <Stack.Navigator
+            initialRouteName="Landing"
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: '#FFFFFF' },
+            }}
+          >
+            <Stack.Screen name="Landing" component={LandingScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen
+              name="SignUpUserType"
+              component={SignUpUserTypeScreen}
+            />
+            <Stack.Screen
+              name="SignUpCountry"
+              component={SignUpCountryScreen}
+            />
+            <Stack.Screen name="SignUpForm" component={SignUpFormScreen} />
+            <Stack.Screen name="SignUpVerify" component={SignUpVerifyScreen} />
+            <Stack.Screen name="MainTabs" component={MainTabs} />
+            <Stack.Screen
+              name="ManufacturerDetail"
+              component={ManufacturerDetailScreen}
+            />
+            <Stack.Screen
+              name="InfluencerDetail"
+              component={InfluencerDetailScreen}
+            />
+            <Stack.Screen name="Calendar" component={CalendarScreen} />
+            <Stack.Screen
+              name="ChangePassword"
+              component={ChangePasswordScreen}
+            />
+            <Stack.Screen
+              name="WorkspaceSecurity"
+              component={WorkspaceSecurityScreen}
+            />
+            <Stack.Screen
+              name="ProfilePrivacy"
+              component={ProfilePrivacyScreen}
+            />
+            <Stack.Screen
+              name="NotificationsScreen"
+              component={NotificationsScreen}
+            />
+            <Stack.Screen
+              name="NotificationSettings"
+              component={NotificationSettingsScreen}
+            />
+            <Stack.Screen name="Activity" component={ActivityScreen} />
+            <Stack.Screen name="HelpSupport" component={HelpSupportScreen} />
+            <Stack.Screen
+              name="MeasurementForm"
+              component={MeasurementFormScreen}
+            />
+            <Stack.Screen name="ClientCrm" component={ClientCrmScreen} />
+            <Stack.Screen name="ClientDetail" component={ClientDetailScreen} />
+            <Stack.Screen
+              name="TeamManagement"
+              component={TeamManagementScreen}
+            />
+            <Stack.Screen name="TeamProfile" component={TeamProfileScreen} />
+            <Stack.Screen name="Inventory" component={InventoryScreen} />
+            <Stack.Screen
+              name="InventoryItemDetail"
+              component={InventoryItemDetailScreen}
+            />
+            <Stack.Screen name="Orders" component={OrdersScreen} />
+            <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+            <Stack.Screen name="Finance" component={FinanceScreen} />
+            <Stack.Screen
+              name="CreateInvoice"
+              component={CreateInvoiceScreen}
+            />
+            <Stack.Screen name="CreatePost" component={CreatePostScreen} />
+            <Stack.Screen name="PostDetails" component={PostDetailsScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthProvider>
     </ApolloProvider>
   );
 }

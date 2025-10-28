@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,14 @@ import {
   Linking,
 } from 'react-native';
 import tw from 'twrnc';
+import { useLazyQuery, gql } from '@apollo/client';
 import {
   ChevronLeft,
   Mail,
   Phone,
   Users,
   MessageCircle,
-  Chat,
+  MessageSquare,
 } from 'lucide-react-native';
 
 // Import colors directly
@@ -25,7 +26,46 @@ const colors = {
   backgroundWhite: '#FAFAFA',
 };
 
+// GraphQL query to fetch support contacts
+const GET_SUPPORT_CONTACTS = gql`
+  query GetSupportContacts {
+    support_contactsCollection(
+      filter: { is_active: { eq: true } }
+      orderBy: { display_order: AscNullsLast }
+    ) {
+      edges {
+        node {
+          id
+          contact_type
+          label
+          value
+        }
+      }
+    }
+  }
+`;
+
 export default function HelpSupportScreen({ navigation }: any) {
+  const [contacts, setContacts] = useState<any[]>([]);
+
+  // Fetch support contacts from database
+  const [fetchContacts] = useLazyQuery(GET_SUPPORT_CONTACTS, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      if (data?.support_contactsCollection?.edges) {
+        setContacts(
+          data.support_contactsCollection.edges.map((edge: any) => edge.node)
+        );
+      }
+    },
+    onError: (error) => {
+      console.error('Error fetching support contacts:', error);
+    },
+  });
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
   const handleEmailPress = (email: string) => {
     Linking.openURL(`mailto:${email}`);
   };
@@ -116,36 +156,26 @@ export default function HelpSupportScreen({ navigation }: any) {
                 </Text>
               </View>
               <View style={tw`gap-4`}>
-                <TouchableOpacity
-                  onPress={() => handleEmailPress('care@emailsupport.com')}
-                >
-                  <Text
-                    style={[
-                      tw`text-sm`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    care@emailsupport.com
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleEmailPress('support@emailsupport.com')}
-                >
-                  <Text
-                    style={[
-                      tw`text-sm`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    support@emailsupport.com
-                  </Text>
-                </TouchableOpacity>
+                {contacts
+                  .filter((c) => c.contact_type === 'email')
+                  .map((contact, index) => (
+                    <TouchableOpacity
+                      key={contact.id}
+                      onPress={() => handleEmailPress(contact.value)}
+                    >
+                      <Text
+                        style={[
+                          tw`text-sm`,
+                          {
+                            color: colors.black,
+                            fontFamily: 'Satoshi Variable',
+                          },
+                        ]}
+                      >
+                        {contact.value}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
               </View>
             </View>
 
@@ -166,36 +196,26 @@ export default function HelpSupportScreen({ navigation }: any) {
                 </Text>
               </View>
               <View style={tw`gap-4`}>
-                <TouchableOpacity
-                  onPress={() => handlePhonePress('+18005550199')}
-                >
-                  <Text
-                    style={[
-                      tw`text-sm`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    +1 800 555 0199
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handlePhonePress('+2349034588495')}
-                >
-                  <Text
-                    style={[
-                      tw`text-sm`,
-                      {
-                        color: colors.black,
-                        fontFamily: 'Satoshi Variable',
-                      },
-                    ]}
-                  >
-                    +234 9034588495
-                  </Text>
-                </TouchableOpacity>
+                {contacts
+                  .filter((c) => c.contact_type === 'phone')
+                  .map((contact) => (
+                    <TouchableOpacity
+                      key={contact.id}
+                      onPress={() => handlePhonePress(contact.value)}
+                    >
+                      <Text
+                        style={[
+                          tw`text-sm`,
+                          {
+                            color: colors.black,
+                            fontFamily: 'Satoshi Variable',
+                          },
+                        ]}
+                      >
+                        {contact.value}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
               </View>
             </View>
           </View>
@@ -374,7 +394,7 @@ export default function HelpSupportScreen({ navigation }: any) {
         ]}
         onPress={handleChatSupport}
       >
-        <Chat size={30} color="white" />
+        <MessageSquare size={30} color="white" />
       </TouchableOpacity>
     </View>
   );

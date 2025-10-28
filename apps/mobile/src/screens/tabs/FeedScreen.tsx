@@ -1,20 +1,8 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  FlatList,
-} from 'react-native';
+import React, { useState, useCallback, useMemo } from 'react';
+import { View, ScrollView, FlatList } from 'react-native';
 import tw from 'twrnc';
-import {
-  Header,
-  PostCard,
-  StoryItem,
-  Chip,
-  Toast,
-  useToast,
-} from '../../components';
+import { Header, PostCard, StoryItem, Chip, Toast } from '../../components';
+import { useToast } from '../../hooks';
 import { faker } from '@faker-js/faker';
 import { Frame, Gem, Shirt, Users } from 'lucide-react-native';
 
@@ -288,7 +276,7 @@ export default function FeedScreen() {
   );
 
   const renderPost = useCallback(
-    ({ item: post }) => (
+    ({ item: post }: { item: any }) => (
       <PostCard
         post={{
           ...post,
